@@ -16,7 +16,7 @@ _Layered architecture also distinguishes the Persistance layer but we're not tal
 
 You can think of the contents of `/app/controllers/` and `/app/actions` as belonging to the UI layer. `/app/services/` constitute a Business layer<sup>[[1]](#1)</sup>.
 
-Within `/app/services/`, there are several subdomains, each having an `MySubdomain::Interface` class (this is our interactor), a bunch of Business Operations and a bunch of data objects, organized into subfolders by their semantics. If your operation may be described as "It syncronizes assets belonging to the MyIntegration identity", it'll probably rest in `MyIntegration::Assets::Syncronize` class or something alike.
+Within `/app/services/`, there are several subdomains, each having an `MySubdomain::Interface` class (this is our interactor), a bunch of Business Operations and a bunch of data objects, organized into subfolders by their semantics. If your operation may be described as "It syncronizes assets belonging to the AcmeIntegration identity", it'll probably rest in `AcmeIntegration::Assets::Syncronize` class or something alike.
 
 Usually, `/app/services/` will also contain some other legacy not-yet-refactored stuff for which it is either:
 
