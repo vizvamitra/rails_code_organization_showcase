@@ -1,73 +1,126 @@
 # Rails Code Organization Showcase
 
-## Core Concepts
+In this repo, I present a way I usually organize my code. I'm using this way of organization for over 5 years. It worked great for me in 3 very different projects and was highly appreciated by my colleagues
 
-**Business Logics layer** -- Code that implements the rules for how the data is managed and how it can be queried/changed by external actors
+Disclamer: this is a completely artificial example, not a sample of a real project's code. I have never launched this code, there may be typos or other "bugs". Please create an issue if you will spot some silly mistake somewhere.
 
-**UI layer** -- anything that provides a mechanism to interact with the Business Logics layer. Rails app, CLI, App window, etc. We have several UIs right now: API, Sidekiq, Admin Panel, Cron tasks, maybe something else as well (all happen to be implemented as a single Rails app)
+## ToC
 
-_Layered architecture also distinguishes the Persistance layer but we're not talking about it here_
+1. [System overview](#system-overview)
+2. [Code structure](#code-structure)
+3. [Core Concepts](#core-concepts)
+    - [Layers](#layers)
+    - [Sub-systems](#subsystems)
+    - [Operations](#operations)
+    - [Data Owners](#data-owners)
+4. [Responsibilities](#responsibilities)
+5. [Design Decisions](#design-decisions)
+6. [Further Improvements](#further-improvements)
+5. [Discussion](#discussion)
 
-**Interactor** -- a boundary between business logics and UIs, part of the Business Logics layer. Specifies public interface to the business logics. Might serve as a boundary between subdomains within the Business Logics layer as well
+## System Overview
 
-**Business Operation** -- a piece of code that implements some part of the business logics. Something that can be described with a single verb (e.g. Create an account, syncronize account's assets, process webhook). Business operations can call one another, but only within the same subdomain
+The code in this repo models a part of an ads management service. It allows its users to manage their ads from different advertising plafroms in a single place. The system consists of a dashboard with various stats and controls over ads, and a bunch of integrations with ad platforms.
+
+The only integration presented here is an integration with a fictional Acme Corporation. To add ads from that platform to the system, user must authorize our app via oauth through Acme-provided JS plugin. In order for us to be able to manage user's ads, that user must:
+
+- Have an admin role in Acme system
+- Grant us all the requested permissions
+- Have an ad account on Acme side set up specifically for our system (say, it should have a specific name)
+- Have specific set of permissions over that ad account
+
+The modeled part consists of 2 sub-systems: **"ads management"** and **"acme integration"**, -- and 3 flows:
+
+1. The addition of a new Acme ad account to the system. When the user finishes Acme oauth flow, our frontend sends us an API request to `POST /acme_integration/ad_accounts?access_token=` endpoint. Internally, that endpoint validates if preconditions are met and registers the ad account in our system
+
+2. The syncronization of ads. The system has a pair of background jobs that sync the ads for all active acme ad accounts in the system: `AcmeIntegration::ScheduleAdsSyncJob` runs by cron every X minutes and schedules a `AcmeIntegration::SyncAdsJob`s for each ad account that should be synced
+
+3. The deactivation of our services for a specific acme ad account. When user clicks a corresponding button in UI, FE sends `POST /ads_management/assets/:id/deactivations` request that triggers the deactivation
 
 ## Code Structure
 
-You can think of the contents of `/app/controllers/` and `/app/actions` as belonging to the UI layer. `/app/services/` constitute a Business layer<sup>[[1]](#1)</sup>.
+- `/app/actions` stores classes that model system-facing parts of individual controller actions. Classes are named after the controller and action method they are used in.
+- `/app/controllers`, `/app/jobs` and `/app/serializers` are self-evident
+- `/app/models` stores domain objects: thin models with associations, scopes, some validations, but never the logic
+- `/app/services` stores all the application logic, split into namespaces according to the sub-systems they model
+- `/lib` stores gem-like code that is not application-specific
 
-Within `/app/services/`, there are several subdomains, each having an `MySubdomain::Interface` class (this is our interactor), a bunch of Business Operations and a bunch of data objects, organized into subfolders by their semantics. If your operation may be described as "It syncronizes assets belonging to the AcmeIntegration identity", it'll probably rest in `AcmeIntegration::Assets::Syncronize` class or something alike.
+## Core Concepts
 
-Usually, `/app/services/` will also contain some other legacy not-yet-refactored stuff for which it is either:
+### Layers
 
-- still unclear which subdomain it belongs to
-- there was no need to change it since the new approach was adopted
-- it is too complex to refactor yet
+The code in this repo follows the ideas from layered architecture style and distinguishes 4 layers:
+
+- **Presentation layer** is responsible for handling user interactions and presenting the information to users. In this repo, it consists of controllers, actions, serializers and maybe jobs (see the [Discussion](#discussion) section).
+
+- **Application layer** consists of the business logic of the system, that is, the rules on how the data in the system is managed. In this repo, all the code that models business logic resides in the `/app/services` folder
+
+- **Domain layer** represents the state of the system and consists of models. I keep models thin and only put associations, scopes and consistency-related validations into them
+
+- **Infrastructure layer** holds gem-like code that solves specific low-level problems (api clients, logging, metrics, etc). In this repo, it is all stored in the `/lib` folder
+
+I write my code in a way that each piece belongs to one and only layer. This helps to separate concenrs, keep rails aside from the business logic, increases testability and, most importantly, limits the number of reasons for which each unit of code may change. Controllers/actions/serializers change when the interface of the system changes, business logic in application layer change when requirements change, etc.
+
+### Sub-Systems
+
+*TBD*
+
+Often systems consist of several logical parts that have few in common
+
+### Operations
+
+*TBD*
+
+This idea of data/behavior separation comes from functional programming, where you typically have data modelled as dumb immutable structs and behavior -- as functions. I've adopted it after watching the ["Functional Architecture for the Practical Rubyist"](https://www.youtube.com/watch?v=7qnsRejCyEQ) talk by Tim Riley, which I recommend everybody to watch.
+
+### Data Owners
+
+*TBD*
 
 ## Responsibilities
 
-### UI layer
+*TBD*
 
-**Controllers** are responsible for knowing which action to call, how to render it's result/errors/exceptions, specifying the set of allowed http parameters, setting the user-related context (e.g. user locale, time zone), authentication
+## Design Decisions
 
-**Actions** are responsible for knowing which interaction to call, the set of parameters it needs, how to map business-layer errors into UI-layer errors (the ones that controllers know how to render)
+*TBD*
 
-### Business Logics layer
+## Further Improvements
 
-**Interfaces** are responsible for providing a complete set of available interactions with a subdomain. Additionally, they may have some service logics related to logging, metrics, etc. Each method within the interface knows which business operation should be called and if the logging is needed. Classical interactors should also care about input/output objects' formats, but I think in Ruby we don't need that and may let Business Operations care about those, just leave YARD comments listing params, return values and expected exceptions above each method
+In this part I speak about what might be improved further and when it is appropriate
 
-**Business Operations** are responsible for the actual logics. I prefer to model operations as objects-functions, which are simple POROs with a single public method `#call` and external dependencies (configs and other business operations) injected into the `#initialize` method. Whenever you need to create/update/delete a model, this should happen within some of the business operations, not in a method within a model class. Whenever you find yourself writing a callback in a model, stop and think of how to fit the logics into a business operation. Models are data, it's better to keep them static, without any logics. Only functions are dinamic, so business operations should manage all that. You can watch [this talk](https://www.youtube.com/watch?v=7qnsRejCyEQ) by Tim Riley, one of the authors of dry-rb, to better understand the benefits of this approach
+*TBD*
 
-**Data objects** are simple static immutable structs that are only responsible for holding data. I prefer to use [dry-struct](https://dry-rb.org/gems/dry-struct/1.0/) for them cause it has a good validation dsl and, once created, your code may trust the record to be valid (otherwise the code that is responsible for building that data object will crash, revealing that some of your expectations there are incorrect).
+- Use result monad from `dry-monads` instead of exceptions to control the flow
+- Replace initializers with `dry_container` + `dry-auto_inject`
+- Hide models behind repositories
+- Extract sub-systems into separate gems with Rails engines inside
+- Create separate representations of a User within both subsystems, pass `user_public_id` into the subsystems instead of `user_id`
+- Extract AdAccount's identity-related fields into an Identity model
 
-## Border Cases
+## Discussion
 
 ### Models
 
-In ActiveRecord models responsibilities are squashed: model classes serve as repositories while instances both represent data and act as repositories (when saving/updating/deleting/etc), which places models in between Business Logics and Persistance layers. I think it is fine to put scopes, associations, validations and read-only methods into models, but adding callbacks and any other business logics should be avoided and all the changes to model state should happen within the business operations.
+*TBD*
 
 ### Background Jobs
 
-They are in the gray zone. In one hand, Sidekiq can be viewed as an automated configurable clinet that triggers business logics accounrding to the rules defined by a programmer. Workers are like controllers in this analogy, which suggests that they should belong to the UI layer. But in the other hand, retry logics, queue preference (priority) and scheduling belongs to a domain. All this places bg jobs on the border between layers. Business operations will schedule jobs, jobs will call interactors. I think that within a single subdomain it is fine to schedule a job referencing it by name, whereas across subdomains an interactor should be used instead to capture the fact that it is a cross-subdomain call and thus it is a part of subdomains public interface.
+*TBD*
 
-### Input Validation.
+### Input Validation
 
-I think that some validations should belong to the UI side (form/API params validation), others -- to the busniess side (internal business logics constraints).
-
-When you validate form/API input, you're certain in which fields are required, what types to expect, string formats, enum variants etc. Validating all or most of this should belong to the UI layer cause all of those constraints are a part of the public interface of the business operation that happens when the form is submitted.
-
-Business logics-related validations (the ones that depend on the system state) should belong to the business logics layer and happen within business operations. Otherwise, UI layer will need to check that sate which will break the inversion of dependencies which is not good. If the list of errors is one of the expected operation's outcomes, business operation may use a Result monad and return either a `Success` with a result object or a `Failure` with `ActiveModel::Errors`. Otherwise, it can just throw subdomain-layer exceptions with semantic names (e.g. `AccessTokenInvalidError`, `AccountNotFundedError`). It'll be a responsibility of a UI layer then to decide how to map those exceptions into user-friendly http errors with i18n-ized messages.
+*TBD*
 
 ### Authentication
 
-For simplicity, people usually just use device's `User` for both authentication and representation of a user but they don't really have to. If you think about it, nothing prevents the user from having multiple sets of credentials, which shows that those concepts can be separated. I think that credentials should belong to the UI layer whereas the user representation -- to the Business Logics layer. Credentials will then have a reference to the user. UI's responsibility is to check if the client is authenticated and then provide this reference along with the other parameters to the Business Logics interface.
-
-While that holds for simple authentication cases, I'm still not sure how it'll work for the complex ones where you may need to track and invalidate devise sessions etc, cause I don't have real experience with such systems yet
+*TBD*
 
 ### Authorization
 
-I'm still not 100% sure here, but for me it looks like permissions/roles are a part of a business logics and thus should rest within it, not outside. Rails ecosystem is very kind to provide gems with simple mechanisms to do authorization right within a controller, but having it there forces controller to know about your business logics and the internal system state. Good at the start, might be bad later when it comes to organizing the code into subdomains cause controllers will know too much.
+*TBD*
 
------
 
-<span id="1">1</span>. This structure is just the first step. On later stages, when subdomains emerge and boundaries between them are formed, one can choose to split them into separate gems (possibly, wrapping into Rails engines) or even into microserices.
+
+
+
