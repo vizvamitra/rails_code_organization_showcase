@@ -14,15 +14,13 @@ module AcmeIntegration
       # We sync ads if:
       #
       # 1. Syncronization is turned on by user
-      # 2. Ad account is not archived
-      # 3. Identity credentials are valid
+      # 2. Identity credentials are valid
       #
       # Assume that AdAccount status and access are synced elsewhere by cron
       #
       def active_ad_accounts
         AdAccount
           .where(ads_syncronization: true, access_status: :acquired)
-          .where.not(status: :archived)
           .includes(:identity)
       end
 

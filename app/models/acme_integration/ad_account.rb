@@ -2,8 +2,7 @@
 
 module AcmeIntegration
   class AdAccount < ApplicationRecord
-    enum access_status: { revoked: 0, acquired: 2, lost: 3 }, _prefix: :access
-    enum status: { active: 0, paused: 1, archived: 2 }
+    enum access_status: { acquired: 2, lost: 3 }, _prefix: :access
 
     belongs_to :user
     has_many :ads
