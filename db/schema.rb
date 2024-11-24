@@ -10,12 +10,28 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2024_11_24_135547) do
+ActiveRecord::Schema[8.0].define(version: 2024_11_24_144839) do
   create_table "clients", force: :cascade do |t|
     t.string "title"
     t.boolean "active"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+  end
+
+  create_table "moderation_assets", force: :cascade do |t|
+    t.integer "client_id", null: false
+    t.integer "source", null: false
+    t.integer "public_id", null: false
+    t.string "title", null: false
+    t.string "avatar_url", null: false
+    t.string "external_id", null: false
+    t.boolean "moderated", default: false, null: false
+    t.boolean "access_acquired", default: false, null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["client_id", "external_id"], name: "index_moderation_assets_on_client_id_and_external_id", unique: true
+    t.index ["client_id"], name: "index_moderation_assets_on_client_id"
+    t.index ["public_id"], name: "index_moderation_assets_on_public_id", unique: true
   end
 
   create_table "sessions", force: :cascade do |t|
