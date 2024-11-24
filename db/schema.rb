@@ -10,7 +10,26 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2024_11_24_144839) do
+ActiveRecord::Schema[8.0].define(version: 2024_11_24_151040) do
+  create_table "acme_integration_identities", force: :cascade do |t|
+    t.integer "client_id", null: false
+    t.string "external_id", null: false
+    t.string "name", null: false
+    t.string "avatar_url", null: false
+    t.string "access_token"
+    t.boolean "access_token_valid", default: false, null: false
+    t.boolean "can_view_public_profile", default: false, null: false
+    t.boolean "can_moderate_comments", default: false, null: false
+    t.boolean "permission_public_profile_read", default: false, null: false
+    t.boolean "permission_pages_read", default: false, null: false
+    t.boolean "permission_page_comments_read", default: false, null: false
+    t.boolean "permission_page_comments_manage", default: false, null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["client_id", "external_id"], name: "index_acme_integration_identities_on_client_id_and_external_id", unique: true
+    t.index ["client_id"], name: "index_acme_integration_identities_on_client_id"
+  end
+
   create_table "clients", force: :cascade do |t|
     t.string "title"
     t.boolean "active"
