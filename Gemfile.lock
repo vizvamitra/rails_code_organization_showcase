@@ -86,6 +86,7 @@ GEM
     brakeman (6.2.2)
       racc
     builder (3.3.0)
+    coderay (1.1.3)
     concurrent-ruby (1.3.4)
     connection_pool (2.4.1)
     crass (1.0.6)
@@ -102,6 +103,9 @@ GEM
       tzinfo
     factory_bot (6.5.0)
       activesupport (>= 5.0.0)
+    factory_bot_rails (6.4.4)
+      factory_bot (~> 6.5)
+      railties (>= 5.0.0)
     fugit (1.11.1)
       et-orbi (~> 1, >= 1.2.11)
       raabro (~> 1.4)
@@ -143,6 +147,7 @@ GEM
       net-pop
       net-smtp
     marcel (1.0.4)
+    method_source (1.1.0)
     mini_mime (1.1.5)
     minitest (5.25.2)
     msgpack (1.7.5)
@@ -183,6 +188,11 @@ GEM
       activesupport (>= 7.0.0)
       rack
       railties (>= 7.0.0)
+    pry (0.15.0)
+      coderay (~> 1.1)
+      method_source (~> 1.0)
+    pry-rails (0.3.11)
+      pry (>= 0.13.0)
     psych (5.2.0)
       stringio
     puma (6.5.0)
@@ -364,11 +374,12 @@ DEPENDENCIES
   bootsnap
   brakeman
   debug
-  factory_bot
+  factory_bot_rails
   importmap-rails
   jbuilder
   kamal
   propshaft
+  pry-rails
   puma (>= 5.0)
   rails (~> 8.0.0)
   rspec
