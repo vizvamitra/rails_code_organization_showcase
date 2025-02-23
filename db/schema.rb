@@ -18,12 +18,13 @@ ActiveRecord::Schema[8.0].define(version: 2024_11_24_155134) do
     t.string "avatar_url", null: false
     t.string "access_token"
     t.boolean "access_token_valid", default: false, null: false
-    t.boolean "can_view_public_profile", default: false, null: false
+    t.boolean "can_discover_pages", default: false, null: false
     t.boolean "can_moderate_comments", default: false, null: false
     t.boolean "permission_public_profile_read", default: false, null: false
     t.boolean "permission_pages_read", default: false, null: false
     t.boolean "permission_page_comments_read", default: false, null: false
     t.boolean "permission_page_comments_manage", default: false, null: false
+    t.integer "access_status", default: 0, null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["client_id", "external_id"], name: "index_acme_integration_identities_on_client_id_and_external_id", unique: true

@@ -7,12 +7,13 @@ class CreateAcmeIntegrationIdentities < ActiveRecord::Migration[8.0]
       t.string :avatar_url, null: false
       t.string :access_token
       t.boolean :access_token_valid, null: false, default: false
-      t.boolean :can_view_public_profile, null: false, default: false
+      t.boolean :can_discover_pages, null: false, default: false
       t.boolean :can_moderate_comments, null: false, default: false
       t.boolean :permission_public_profile_read, null: false, default: false
       t.boolean :permission_pages_read, null: false, default: false
       t.boolean :permission_page_comments_read, null: false, default: false
       t.boolean :permission_page_comments_manage, null: false, default: false
+      t.integer :access_status, null: false, default: 0
 
       t.timestamps
     end
