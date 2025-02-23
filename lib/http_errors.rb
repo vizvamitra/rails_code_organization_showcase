@@ -10,8 +10,12 @@ module HttpErrors
       self.name.demodulize.sub(/Error$/, "").underscore.to_sym
     end
 
-    def initialize(message_id = self.class.error_type)
-      @message_id = message_id
+    def initialize(message_id = nil, *)
+      @message_id = message_id || self.class.error_type
+    end
+
+    def status
+      ActionDispatch::ExceptionWrapper.status_code_for_exception(self.class.name)
     end
 
     def message
@@ -41,6 +45,10 @@ module HttpErrors
   ForbiddenError = Class.new(Error)
   register(ForbiddenError)
 
+  # 404
+  NotFoundError = Class.new(Error)
+  register(NotFoundError)
+
   # 406
   NotAcceptableError = Class.new(Error)
   register(NotAcceptableError)
@@ -50,8 +58,15 @@ module HttpErrors
   register(UnprocessableEntityError)
 
   # 429
-  RateLimitError = Class.new(Error)
-  register(RateLimitError)
+  class TooManyRequestsError < Error
+    def initialize(message_id = nil, retry_after)
+      @retry_after = retry_after
+      super(message_id)
+    end
+
+    attr_reader :retry_after
+  end
+  register(TooManyRequestsError)
 
   # 500
   InternalServerError = Class.new(Error)

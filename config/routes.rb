@@ -14,4 +14,8 @@ Rails.application.routes.draw do
 
   # Defines the root path route ("/")
   root "home#index"
+
+  namespace :api do
+    resource :authentication, only: %i[create]
+  end
 end
