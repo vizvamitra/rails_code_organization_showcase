@@ -20,17 +20,19 @@ RSpec.describe AcmeIntegration::Identities::Create do
   let(:fetching_error) { nil }
 
   before do
-    allow(fetch_identity).to receive(:call).with(access_token: "whatever") do
+    allow(fetch_identity).to receive(:call).once do
       fetching_error ? raise(fetching_error) : attributes
     end
-    allow(store_identity).to receive(:call).with(client:, attributes:) { identity }
+    allow(store_identity).to receive(:call).once { identity }
   end
 
-  it "returns fetches identity from Acme, stores it and refreshes access status" do
-    expect(create_identity).to eq(identity)
+  context "when access token is valid" do
+    it "fetches identity from Acme and stores it" do
+      expect(create_identity).to eq(identity)
 
-    expect(fetch_identity).to have_received(:call).with(access_token: "whatever")
-    expect(store_identity).to have_received(:call).with(client:, attributes:)
+      expect(fetch_identity).to have_received(:call).with(access_token: "whatever")
+      expect(store_identity).to have_received(:call).with(client:, attributes:)
+    end
   end
 
   context "when client can't be found" do

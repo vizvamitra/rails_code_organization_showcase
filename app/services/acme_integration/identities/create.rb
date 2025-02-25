@@ -12,6 +12,8 @@ module AcmeIntegration
       #
       # @return [AcmeIntegration::Identity]
       # @raise [ActiveRecord::RecordNotFound]
+      # @raise [AcmeIntegration::AccessTokenInvalidError]
+      # @raise [Acme::Error]
       #
       def call(client_id:, access_token:)
         client = Client.find(client_id)
