@@ -1,4 +1,4 @@
 production:
   acme_integration_schedule_identities_sync:
-    class: "AcmeIntegration::ScheduleIdentitiesSyncJob"
+    class: "AcmeIntegration::SchedulePagesDiscoveryJob"
     schedule: every 5 seconds

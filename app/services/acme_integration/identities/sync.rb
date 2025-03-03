@@ -7,17 +7,18 @@ module AcmeIntegration
         @_store_identity = store_identity
       end
 
-      # @param identity_id [Integer]
+      # @param identity [AcmeIntegration::Identity]
       #
       # @return [void]
-      # @raise [ActiveRecord::RecordNotFound]
       # @raise [Acme::Error]
       #
-      def call(identity_id:)
-        identity = Identity.find(identity_id)
-
+      def call(identity:)
         attributes = fetch(identity) || attributes_when_token_invalid(identity)
-        ActiveRecord::Base.transaction { update(identity, attributes) }
+
+        ActiveRecord::Base.transaction do
+          identity = sync(identity, attributes)
+          identity.update!(last_synced_at: Time.zone.now)
+        end
       end
 
       private
@@ -26,11 +27,11 @@ module AcmeIntegration
 
       def fetch(identity)
         _fetch_identity.call(access_token: identity.access_token)
-      rescue AcmeIntegration::AccessTokenInvalidError
+      rescue AccessTokenInvalidError
         nil
       end
 
-      def update(identity, attributes)
+      def sync(identity, attributes)
         _store_identity.call(client: identity.client, attributes:)
       end
 

@@ -6,8 +6,20 @@ RSpec.describe AcmeIntegration::Identities::Fetch do
   end
 
   let(:api_client) { instance_spy(Acme::ApiClient) }
-  let(:raw_identity) { build(:acme_api_identity) }
+  let(:raw_identity) do
+    build(
+      :acme_api_identity,
+      public_profile_read:,
+      pages_read:,
+      page_comments_read:,
+      page_comments_manage:
+    )
+  end
 
+  let(:public_profile_read) { true }
+  let(:pages_read) { true }
+  let(:page_comments_read) { true }
+  let(:page_comments_manage) { true }
   let(:get_identity_response) { ->(_) { raw_identity } }
 
   before do
@@ -16,7 +28,48 @@ RSpec.describe AcmeIntegration::Identities::Fetch do
       .with(access_token: 'whatever', &get_identity_response)
   end
 
-  context "when Acme responds with identity"
+  shared_examples "parses and returns identity attributes" do
+    it "parses and returns identity attributes" do
+      expect(fetch).to be_a(AcmeIntegration::Identities::Attributes)
+      expect(fetch).to have_attributes(
+        id: raw_identity["id"],
+        access_token: "whatever",
+        name: raw_identity["name"],
+        avatar_url: raw_identity["avatar_url"],
+        permission_public_profile_read: public_profile_read,
+        permission_pages_read: pages_read,
+        permission_page_comments_read: page_comments_read,
+        permission_page_comments_manage: page_comments_manage
+      )
+    end
+  end
+
+  context "when Acme responds with identity" do
+    context "when all permissions are granted" do
+      include_examples "parses and returns identity attributes"
+    end
+
+    context "when `public_profile_read` permission is missing" do
+      let(:public_profile_read) { false }
+      include_examples "parses and returns identity attributes"
+    end
+
+    context "when `pages_read` permission is missing" do
+      let(:pages_read) { false }
+      include_examples "parses and returns identity attributes"
+    end
+
+    context "when `page_comments_read` permission is missing" do
+      let(:page_comments_read) { false }
+      include_examples "parses and returns identity attributes"
+    end
+
+    context "when `page_comments_manage` permission is missing" do
+      let(:page_comments_manage) { false }
+      include_examples "parses and returns identity attributes"
+    end
+  end
+
   context "when Acme responds with authentication error" do
     let(:get_identity_response) do
       ->(_) { raise Acme::AuthenticationError }

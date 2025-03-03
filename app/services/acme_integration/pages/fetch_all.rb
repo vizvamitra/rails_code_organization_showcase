@@ -1,20 +1,19 @@
 module AcmeIntegration
-  module Identities
-    class Fetch
+  module Pages
+    class FetchAll
       def initialize(api_client: Acme::ApiClient.new)
         @_api_client = api_client
       end
 
       # @param access_token [String]
       #
-      # @return [AcmeIntegration::Identities::Attributes]
+      # @return [Array<AcmeIntegration::Pages::Attributes>]
       # @raise [AcmeIntegration::AccessTokenInvalidError]
       # @raise [AcmeIntegration::PermissionMissingError]
       # @raise [Acme::Error]
       #
       def call(access_token:)
-        raw_response = fetch(access_token)
-        parse(raw_response, access_token)
+        fetch(access_token).map { |raw| parse(raw) }
       rescue Acme::AuthenticationError
         raise AccessTokenInvalidError
       rescue Acme::ClientError => e
@@ -26,24 +25,16 @@ module AcmeIntegration
       attr_reader :_api_client
 
       def fetch(access_token)
-        _api_client.get_identity(access_token:)
+        _api_client.get_pages(access_token:)
       end
 
-      def parse(raw, access_token)
+      def parse(raw)
         Attributes.new(
           id: raw["id"],
-          access_token:,
           name: raw["name"],
           avatar_url: raw["avatar_url"],
-          permission_public_profile_read: permission?(raw, :public_profile_read),
-          permission_pages_read: permission?(raw, :pages_read),
-          permission_page_comments_read: permission?(raw, :page_comments_read),
-          permission_page_comments_manage: permission?(raw, :page_comments_manage)
+          manager_role_granted: raw["roles"].include?("manager")
         )
-      end
-
-      def permission?(raw, name)
-        raw["permissions"].include?(name.to_s)
       end
     end
   end

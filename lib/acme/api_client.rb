@@ -10,5 +10,9 @@ module Acme
         }
       }
     end
+
+    def get_pages(access_token:)
+      []
+    end
   end
 end

@@ -6,12 +6,12 @@ module AcmeIntegration
       with_logging { AcmeIntegration::Identities::Create.new.call(**params) }
     end
 
-    def sync_identity(**params)
-      with_logging { AcmeIntegration::Identities::Sync.new.call(**params) }
+    def discover_pages(**params)
+      with_logging { AcmeIntegration::Pages::Discover.new.call(**params) }
     end
 
-    def schedule_identities_sync
-      with_logging { AcmeIntegration::Identities::ScheduleSync.new.call }
+    def schedule_pages_discovery
+      with_logging { AcmeIntegration::Pages::ScheduleDyscovery.new.call }
     end
   end
 end

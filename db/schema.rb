@@ -25,6 +25,7 @@ ActiveRecord::Schema[8.0].define(version: 2024_11_24_155134) do
     t.boolean "permission_page_comments_read", default: false, null: false
     t.boolean "permission_page_comments_manage", default: false, null: false
     t.integer "access_status", default: 0, null: false
+    t.datetime "last_synced_at"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["client_id", "external_id"], name: "index_acme_integration_identities_on_client_id_and_external_id", unique: true
@@ -33,20 +34,20 @@ ActiveRecord::Schema[8.0].define(version: 2024_11_24_155134) do
 
   create_table "acme_integration_pages", force: :cascade do |t|
     t.integer "client_id", null: false
-    t.integer "identity_id", null: false
+    t.integer "access_provider_id"
     t.string "external_id", null: false
-    t.string "name", null: false
-    t.string "avatar_url", null: false
+    t.string "name"
+    t.string "avatar_url"
     t.boolean "manager_role_granted", default: false, null: false
     t.boolean "discoverable", default: false, null: false
     t.integer "status", default: 0, null: false
     t.boolean "retrieve_comments", default: false, null: false
+    t.datetime "last_synced_at"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.index ["access_provider_id"], name: "index_acme_integration_pages_on_access_provider_id"
     t.index ["client_id", "external_id"], name: "index_acme_integration_pages_on_client_id_and_external_id", unique: true
-    t.index ["client_id"], name: "index_acme_integration_pages_on_client_id"
     t.index ["external_id"], name: "index_acme_integration_pages_on_external_id"
-    t.index ["identity_id"], name: "index_acme_integration_pages_on_identity_id"
   end
 
   create_table "clients", force: :cascade do |t|

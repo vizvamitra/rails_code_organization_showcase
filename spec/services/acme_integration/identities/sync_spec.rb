@@ -2,7 +2,7 @@ require "rails_helper"
 
 RSpec.describe AcmeIntegration::Identities::Sync do
   subject(:sync) do
-    described_class.new(fetch_identity:, store_identity:).call(identity_id:)
+    described_class.new(fetch_identity:, store_identity:).call(identity:)
   end
 
   let(:fetch_identity) { instance_spy(AcmeIntegration::Identities::Fetch) }
@@ -16,7 +16,6 @@ RSpec.describe AcmeIntegration::Identities::Sync do
     build(:acme_integration_identity_attributes, id: identity.external_id)
   end
 
-  let(:identity_id) { identity.id }
   let(:fetching_error) { nil }
 
   before do
@@ -56,11 +55,6 @@ RSpec.describe AcmeIntegration::Identities::Sync do
         )
       )
     end
-  end
-
-  context "when identity can't be found" do
-    let(:identity_id) { "invalid" }
-    it { expect { sync }.to raise_error(ActiveRecord::RecordNotFound) }
   end
 
   context "when fetching fails for another reason" do

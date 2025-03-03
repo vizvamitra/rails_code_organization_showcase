@@ -14,9 +14,11 @@ class CreateAcmeIntegrationIdentities < ActiveRecord::Migration[8.0]
       t.boolean :permission_page_comments_read, null: false, default: false
       t.boolean :permission_page_comments_manage, null: false, default: false
       t.integer :access_status, null: false, default: 0
+      t.datetime :last_synced_at
 
       t.timestamps
+
+      t.index %i[client_id external_id], unique: true
     end
-    add_index :acme_integration_identities, %i[client_id external_id], unique: true
   end
 end
