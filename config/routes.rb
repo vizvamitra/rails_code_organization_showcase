@@ -19,6 +19,7 @@ Rails.application.routes.draw do
     resource :authentication, only: %i[create]
     scope "/acme", module: :acme_integration do
       resources :identities, only: %i[create]
+      resources :pages, only: %i[index]
     end
   end
 end

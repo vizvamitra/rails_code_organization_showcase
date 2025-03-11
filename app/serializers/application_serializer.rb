@@ -1,5 +1,5 @@
 class ApplicationSerializer
   include Alba::Resource
 
-  root_key :data
+  root_key :data, :data
 end

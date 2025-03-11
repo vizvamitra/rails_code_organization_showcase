@@ -20,7 +20,7 @@ RSpec.describe "api/acme/identities", type: :request do
         "access_status" => be_a(String),
         "access_token_valid" => be_truthy.or(be_falsey),
         "can_discover_pages" => be_truthy.or(be_falsey),
-        "can_moderate_comments" => be_truthy.or(be_falsey),
+        "can_moderate_comments" => be_truthy.or(be_falsey)
       }
     end
 
@@ -72,7 +72,7 @@ RSpec.describe "api/acme/identities", type: :request do
     context "when user is not authenticated" do
       let(:authenticated) { false }
 
-      it "responds with 400" do
+      it "responds with 401" do
         expect(response).to have_http_status(401)
         expect(json["errors"].first).to include("title" => "unauthorized")
       end
