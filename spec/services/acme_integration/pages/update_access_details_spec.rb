@@ -2,7 +2,7 @@ require "rails_helper"
 
 RSpec.describe AcmeIntegration::Pages::UpdateAccessDetails do
   subject(:update) do
-    described_class.new.call(
+    described_class.new(moderation:).call(
       page:,
       access_provider:,
       discoverable:,
@@ -10,12 +10,16 @@ RSpec.describe AcmeIntegration::Pages::UpdateAccessDetails do
     )
   end
 
+  let(:moderation) { instance_spy(Moderation::Interface) }
+
   let(:page) { create(:acme_integration_page) }
   let(:identity) { create(:acme_integration_identity) }
 
   let(:access_provider) { identity }
   let(:discoverable) { true }
   let(:manager_role_granted) { true }
+
+  before { allow(moderation).to receive(:toggle_asset_access_status) }
 
   shared_examples "updates the page, setting status to" do |status|
     it "updates the page, setting status to '#{status}'" do
@@ -25,6 +29,10 @@ RSpec.describe AcmeIntegration::Pages::UpdateAccessDetails do
         "manager_role_granted" => manager_role_granted,
         "status" => status
       )
+
+      expect(moderation)
+        .to have_received(:toggle_asset_access_status)
+        .with(public_id: page.public_id, access_acquired: status == "operable")
     end
   end
 

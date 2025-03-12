@@ -32,7 +32,9 @@ module AcmeIntegration
                   :_update_access_details
 
       def find_or_build(client_id, external_id)
-        Page.find_or_initialize_by(client_id:, external_id:)
+        Page
+          .create_with(public_id: SecureRandom.uuid)
+          .find_or_initialize_by(client_id:, external_id:)
       end
 
       def prefered_provider?(page, identity, attributes)

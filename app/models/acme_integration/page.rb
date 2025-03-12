@@ -3,8 +3,16 @@ module AcmeIntegration
     belongs_to :client
     belongs_to :access_provider, class_name: "AcmeIntegration::Identity", optional: true
 
-    # enum :access_status, { revoked: 0, partial: 1, granted: 2, degraded: 3 }, prefix: :access
-    # enum :status, { undiscoverable: 0, not_moderatable: 1, moderatable: 2 }
+    # Alternative namings:
+    # - access_status: revoked / partial / granted / degraded
+    # -        status: undiscoverable / not_moderatable / moderatable
+    #
     enum :status, { undiscoverable: 0, inoperable: 1, operable: 2 }
+
+    validates :external_id, presence: true, uniqueness: { scope: :client_id }
+
+    def url
+      "https://www.example.com/page/#{external_id}"
+    end
   end
 end

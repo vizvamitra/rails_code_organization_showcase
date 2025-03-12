@@ -35,6 +35,7 @@ ActiveRecord::Schema[8.0].define(version: 2024_11_24_155134) do
   create_table "acme_integration_pages", force: :cascade do |t|
     t.integer "client_id", null: false
     t.integer "access_provider_id"
+    t.string "public_id", null: false
     t.string "external_id", null: false
     t.string "name"
     t.string "avatar_url"
@@ -48,6 +49,7 @@ ActiveRecord::Schema[8.0].define(version: 2024_11_24_155134) do
     t.index ["access_provider_id"], name: "index_acme_integration_pages_on_access_provider_id"
     t.index ["client_id", "external_id"], name: "index_acme_integration_pages_on_client_id_and_external_id", unique: true
     t.index ["external_id"], name: "index_acme_integration_pages_on_external_id"
+    t.index ["public_id"], name: "index_acme_integration_pages_on_public_id", unique: true
   end
 
   create_table "clients", force: :cascade do |t|
@@ -60,15 +62,15 @@ ActiveRecord::Schema[8.0].define(version: 2024_11_24_155134) do
   create_table "moderation_assets", force: :cascade do |t|
     t.integer "client_id", null: false
     t.integer "source", null: false
-    t.integer "public_id", null: false
-    t.string "title", null: false
-    t.string "avatar_url", null: false
-    t.string "external_id", null: false
+    t.string "public_id", null: false
+    t.string "title"
+    t.string "avatar_url"
+    t.string "url"
     t.boolean "moderated", default: false, null: false
     t.boolean "access_acquired", default: false, null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.index ["client_id", "external_id"], name: "index_moderation_assets_on_client_id_and_external_id", unique: true
+    t.index ["client_id", "public_id"], name: "index_moderation_assets_on_client_id_and_public_id"
     t.index ["client_id"], name: "index_moderation_assets_on_client_id"
     t.index ["public_id"], name: "index_moderation_assets_on_public_id", unique: true
   end

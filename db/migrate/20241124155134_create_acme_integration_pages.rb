@@ -3,6 +3,7 @@ class CreateAcmeIntegrationPages < ActiveRecord::Migration[8.0]
     create_table :acme_integration_pages do |t|
       t.references :client, null: false, index: false
       t.references :access_provider
+      t.string :public_id, null: false
       t.string :external_id, null: false
       t.string :name
       t.string :avatar_url
@@ -16,6 +17,7 @@ class CreateAcmeIntegrationPages < ActiveRecord::Migration[8.0]
 
       t.index %i[client_id external_id], unique: true
       t.index :external_id
+      t.index :public_id, unique: true
     end
   end
 end

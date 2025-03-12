@@ -36,7 +36,9 @@ RSpec.describe AcmeIntegration::Pages::Actualize do
   context "when page exists" do
     it "refreshes it's details and status" do
       expect { actualize }
-        .to change { page.reload.last_synced_at }.to be_within(1.second).of(Time.now)
+        .to preserve { page.reload.public_id }
+        .and change { page.reload.last_synced_at }.to be_within(1.second).of(Time.now)
+
       expect(actualize).to eq(page)
 
       expect(is_preferred_access_provider).to have_received(:call).with(
@@ -65,7 +67,8 @@ RSpec.describe AcmeIntegration::Pages::Actualize do
       expect { actualize }.to change(AcmeIntegration::Page, :count).by(1)
       expect(actualize).to be_a(AcmeIntegration::Page)
       expect(actualize).to have_attributes(
-        last_synced_at: be_within(1.second).of(Time.now)
+        last_synced_at: be_within(1.second).of(Time.now),
+        public_id: be_a(String)
       )
 
       expect(is_preferred_access_provider).to have_received(:call).with(
