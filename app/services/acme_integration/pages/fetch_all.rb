@@ -25,7 +25,7 @@ module AcmeIntegration
       attr_reader :_api_client
 
       def fetch(access_token)
-        _api_client.get_pages(access_token:)
+        _api_client.get_pages(access_token:)["data"]
       end
 
       def parse(raw)

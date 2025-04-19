@@ -26,7 +26,7 @@ module AcmeIntegration
       attr_reader :_api_client
 
       def fetch(access_token)
-        _api_client.get_identity(access_token:)
+        _api_client.get_identity(access_token:)["data"]
       end
 
       def parse(raw, access_token)

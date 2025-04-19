@@ -20,7 +20,7 @@ RSpec.describe AcmeIntegration::Identities::Fetch do
   let(:pages_read) { true }
   let(:page_comments_read) { true }
   let(:page_comments_manage) { true }
-  let(:get_identity_response) { ->(_) { raw_identity } }
+  let(:get_identity_response) { ->(_) { { "data" => raw_identity } } }
 
   before do
     allow(api_client)

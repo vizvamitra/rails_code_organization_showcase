@@ -17,6 +17,11 @@ Rails.application.routes.draw do
 
   namespace :api do
     resource :authentication, only: %i[create]
+
+    namespace :moderation do
+      resources :assets, only: %i[index]
+    end
+
     scope "/acme", module: :acme_integration do
       resources :identities, only: %i[create]
       resources :pages, only: %i[index]

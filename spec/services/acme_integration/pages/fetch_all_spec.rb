@@ -13,7 +13,7 @@ RSpec.describe AcmeIntegration::Pages::FetchAll do
     ]
   end
 
-  let(:get_pages_response) { ->(_) { raw_pages } }
+  let(:get_pages_response) { ->(_) { { "data" => raw_pages } } }
 
   before do
     allow(api_client)
