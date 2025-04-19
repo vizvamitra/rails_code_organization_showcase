@@ -36,7 +36,7 @@ RSpec.describe "api/moderation/assets", type: :request do
 
     before { request.call }
 
-    context "when access_token is valid" do
+    context "when user is authenticated" do
       it "responds with 200 and current client's assets" do
         expect(response).to have_http_status(200)
         expect(json["data"]).to all(match(asset_object))

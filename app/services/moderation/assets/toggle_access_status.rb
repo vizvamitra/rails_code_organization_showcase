@@ -2,7 +2,7 @@ module Moderation
   module Assets
     class ToggleAccessStatus
       # @param public_id [String]
-      # @param access_acquired [Bool]
+      # @param access_acquired [Boolean]
       #
       # @return [void]
       # @raise [ActiveRecord::RecordNotFound]

@@ -11,5 +11,9 @@ module Moderation
     def list_assets(**params)
       Moderation::Assets::List.new.call(**params)
     end
+
+    def toggle_asset_moderation(**params)
+      with_logging { Moderation::Assets::ToggleModeration.new.call(**params) }
+    end
   end
 end

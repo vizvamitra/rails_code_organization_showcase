@@ -19,7 +19,11 @@ Rails.application.routes.draw do
     resource :authentication, only: %i[create]
 
     namespace :moderation do
-      resources :assets, only: %i[index]
+      resources :assets, only: %i[index] do
+        scope module: :assets do
+          resource :moderation, only: %i[create destroy], controller: 'moderation'
+        end
+      end
     end
 
     scope "/acme", module: :acme_integration do
