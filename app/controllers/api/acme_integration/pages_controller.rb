@@ -7,10 +7,7 @@ module Api
           .order(name: :asc)
           .then { paginate(_1) }
 
-        # `Alba.serialize(collection)` ignores root_key
-        # Bug ticket: https://github.com/okuramasafumi/alba/issues/426
-        #
-        render json: ::AcmeIntegration::PageSerializer.new(pages).serialize
+        render json: Alba.serialize(pages, root_key: "data")
       end
     end
   end

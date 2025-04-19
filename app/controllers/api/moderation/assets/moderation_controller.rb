@@ -5,13 +5,13 @@ module Api
         def create
           asset = Assets::Moderation::Create.new.call(**create_params)
 
-          render json: ::Moderation::AssetSerializer.new(asset).serialize
+          render json: Alba.serialize(asset)
         end
 
         def destroy
           asset = Assets::Moderation::Destroy.new.call(**destroy_params)
 
-          render json: ::Moderation::AssetSerializer.new(asset).serialize
+          render json: Alba.serialize(asset)
         end
 
         private

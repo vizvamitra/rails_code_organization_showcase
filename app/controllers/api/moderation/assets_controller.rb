@@ -4,10 +4,7 @@ module Api
       def index
         assets = Assets::Index.new.call(**index_params).then { paginate(_1) }
 
-        # `Alba.serialize(collection)` ignores root_key
-        # Bug ticket: https://github.com/okuramasafumi/alba/issues/426
-        #
-        render json: ::Moderation::AssetSerializer.new(assets).serialize
+        render json: Alba.serialize(assets, root_key: "data")
       end
 
       private
