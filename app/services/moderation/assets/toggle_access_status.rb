@@ -9,6 +9,9 @@ module Moderation
       #
       def call(public_id:, access_acquired:)
         Asset.find_by!(public_id:).update!(access_acquired:)
+
+        # Normally, there would probably be some other logics, like notifying
+        # the user when his asset looses access
       end
     end
   end

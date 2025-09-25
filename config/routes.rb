@@ -1,4 +1,5 @@
 Rails.application.routes.draw do
+  ActiveAdmin.routes(self)
   resources :home, only: %i[index]
   resource :session
   resources :passwords, param: :token

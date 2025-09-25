@@ -44,6 +44,15 @@ GEM
       erubi (~> 1.11)
       rails-dom-testing (~> 2.2)
       rails-html-sanitizer (~> 1.6)
+    activeadmin (4.0.0.beta15)
+      arbre (~> 2.0)
+      csv
+      formtastic (>= 3.1)
+      formtastic_i18n (>= 0.4)
+      inherited_resources (~> 2.0)
+      kaminari (>= 1.2.1)
+      railties (>= 7.0)
+      ransack (>= 4.0)
     activejob (8.0.0)
       activesupport (= 8.0.0)
       globalid (>= 0.3.6)
@@ -75,6 +84,8 @@ GEM
     addressable (2.8.7)
       public_suffix (>= 2.0.2, < 7.0)
     alba (3.6.0)
+    arbre (2.2.0)
+      activesupport (>= 7.0)
     ast (2.4.2)
     base64 (0.2.0)
     bcrypt (3.1.20)
@@ -96,6 +107,7 @@ GEM
       bigdecimal
       rexml
     crass (1.0.6)
+    csv (3.3.5)
     date (3.4.0)
     debug (1.9.2)
       irb (~> 1.10)
@@ -112,11 +124,17 @@ GEM
     factory_bot_rails (6.4.4)
       factory_bot (~> 6.5)
       railties (>= 5.0.0)
+    formtastic (5.0.0)
+      actionpack (>= 6.0.0)
+    formtastic_i18n (0.7.0)
     fugit (1.11.1)
       et-orbi (~> 1, >= 1.2.11)
       raabro (~> 1.4)
     globalid (1.2.1)
       activesupport (>= 6.1)
+    has_scope (0.8.2)
+      actionpack (>= 5.2)
+      activesupport (>= 5.2)
     hashdiff (1.1.2)
     i18n (1.14.7)
       concurrent-ruby (~> 1.0)
@@ -124,6 +142,11 @@ GEM
       actionpack (>= 6.0.0)
       activesupport (>= 6.0.0)
       railties (>= 6.0.0)
+    inherited_resources (2.1.0)
+      actionpack (>= 7.0)
+      has_scope (>= 0.6)
+      railties (>= 7.0)
+      responders (>= 2)
     io-console (0.7.2)
     irb (1.14.1)
       rdoc (>= 4.0.0)
@@ -265,11 +288,18 @@ GEM
       zeitwerk (~> 2.6)
     rainbow (3.1.1)
     rake (13.2.1)
+    ransack (4.3.0)
+      activerecord (>= 6.1.5)
+      activesupport (>= 6.1.5)
+      i18n
     rdoc (6.8.1)
       psych (>= 4.0.0)
     regexp_parser (2.9.2)
     reline (0.5.11)
       io-console (~> 0.5)
+    responders (3.1.1)
+      actionpack (>= 5.2)
+      railties (>= 5.2)
     rexml (3.4.0)
     rspec (3.13.0)
       rspec-core (~> 3.13.0)
@@ -357,6 +387,13 @@ GEM
     stimulus-rails (1.3.4)
       railties (>= 6.0.0)
     stringio (3.1.2)
+    tailwindcss-ruby (4.1.8)
+    tailwindcss-ruby (4.1.8-aarch64-linux-gnu)
+    tailwindcss-ruby (4.1.8-aarch64-linux-musl)
+    tailwindcss-ruby (4.1.8-arm64-darwin)
+    tailwindcss-ruby (4.1.8-x86_64-darwin)
+    tailwindcss-ruby (4.1.8-x86_64-linux-gnu)
+    tailwindcss-ruby (4.1.8-x86_64-linux-musl)
     thor (1.3.2)
     thruster (0.1.9)
     thruster (0.1.9-aarch64-linux)
@@ -403,6 +440,7 @@ PLATFORMS
   x86_64-linux-musl
 
 DEPENDENCIES
+  activeadmin (~> 4.0.0.beta15)
   alba
   bcrypt (~> 3.1.7)
   bootsnap
@@ -425,6 +463,7 @@ DEPENDENCIES
   solid_queue
   sqlite3 (>= 2.1)
   stimulus-rails
+  tailwindcss-ruby (~> 4.1)
   thruster
   turbo-rails
   tzinfo-data

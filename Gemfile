@@ -42,6 +42,7 @@ gem "thruster", require: false
 
 gem 'alba'
 gem 'kaminari'
+gem 'activeadmin', '~> 4.0.0.beta15'
 
 group :development, :test do
   # See https://guides.rubyonrails.org/debugging_rails_applications.html#debugging-with-the-debug-gem
@@ -64,3 +65,4 @@ group :development do
   gem "web-console"
 end
 
+gem "tailwindcss-ruby", "~> 4.1"
