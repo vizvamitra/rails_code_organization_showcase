@@ -66,3 +66,5 @@ group :development do
 end
 
 gem "tailwindcss-ruby", "~> 4.1"
+
+gem "cssbundling-rails", "~> 1.4"

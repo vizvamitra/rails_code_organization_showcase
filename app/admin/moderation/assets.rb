@@ -2,6 +2,7 @@ ActiveAdmin.register Moderation::Asset do
   config.batch_actions = false
 
   actions :index, :show
+  menu label: "Moderation: Assets"
 
   action_item :pause_moderation, only: :show, if: -> { resource.moderated } do
     link_to(
@@ -34,7 +35,6 @@ ActiveAdmin.register Moderation::Asset do
   filter :updated_at
 
   index download_links: false do
-    selectable_column
     id_column
     column(:client, sortable: :client_id)
     column(:source) { status_tag(_1.source) }
