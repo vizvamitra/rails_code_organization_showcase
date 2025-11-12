@@ -26,7 +26,7 @@ ActiveAdmin.register Moderation::Asset do
 
   filter :id
   filter :public_id_eq, label: "Public Id"
-  filter :client_id, label: "Client Id"
+  filter :client
   filter :source, as: :select, collection: Moderation::Asset.sources
   filter :title
   filter :moderated

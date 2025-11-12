@@ -5,7 +5,6 @@ module Moderation
     enum :source, { acme: 0, meta: 1 }
 
     scope :moderated, -> { where(moderated: true) }
-    scope :moderated_first, -> { order(moderated: :asc) }
 
     def self.ransackable_attributes(auth_object = nil)
       %w[id public_id source title moderated access_acquired created_at updated_at]
