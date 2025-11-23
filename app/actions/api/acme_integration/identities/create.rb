@@ -10,7 +10,7 @@ module Api
           _acme.create_identity(client_id:, access_token:)
         rescue ::AcmeIntegration::AccessTokenInvalidError,
                ::AcmeIntegration::PermissionMissingError
-          raise HttpErrors::UnprocessableEntityError
+          raise HttpErrors::UnprocessableContentError
         end
 
         private

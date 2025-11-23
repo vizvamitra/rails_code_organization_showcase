@@ -10,6 +10,10 @@ module AcmeIntegration
       def call(public_id:, retrieve_comments:)
         page = Page.find_by!(public_id:)
 
+        # Depending on the social network, you may need to perform some additional
+        # actions here. Say, for a Facebook page you'll need to subscribe for
+        # page's webhooks
+
         page.update!(retrieve_comments:)
       end
     end

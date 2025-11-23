@@ -54,8 +54,8 @@ module HttpErrors
   register(NotAcceptableError)
 
   # 422
-  UnprocessableEntityError = Class.new(Error)
-  register(UnprocessableEntityError)
+  UnprocessableContentError = Class.new(Error)
+  register(UnprocessableContentError)
 
   # 429
   class TooManyRequestsError < Error
