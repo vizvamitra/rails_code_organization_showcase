@@ -17,7 +17,7 @@ RSpec.describe "api/moderation/assets", type: :request do
         "title" => be_a(String),
         "url" => be_a(String),
         "avatar_url" => be_a(String),
-        "moderated" => be_truthy.or(be_falsey),
+        "active" => be_truthy.or(be_falsey),
         "access_acquired" => be_truthy.or(be_falsey)
       }
     end

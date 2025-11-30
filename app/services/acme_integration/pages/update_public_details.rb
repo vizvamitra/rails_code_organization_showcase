@@ -25,6 +25,7 @@ module AcmeIntegration
           client_id: page.client_id,
           source: :acme,
           public_id: page.public_id,
+          external_id: page.external_id,
           title: page.name,
           url: page.url,
           avatar_url: page.avatar_url

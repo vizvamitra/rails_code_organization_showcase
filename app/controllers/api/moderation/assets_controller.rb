@@ -12,7 +12,7 @@ module Api
       def index_params
         {
           client_id: Current.user.client_id,
-          **params.permit(:source, :access_acquired, :order)
+          **params.permit(:source, :access_acquired, :title, :order)
         }
       end
     end

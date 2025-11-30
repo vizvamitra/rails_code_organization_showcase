@@ -1,15 +1,15 @@
 module Api
   module Moderation
     module Assets
-      class ModerationController < ApiController
+      class ActivationsController < ApiController
         def create
-          asset = Assets::Moderation::Create.new.call(**create_params)
+          asset = Assets::Activations::Create.new.call(**create_params)
 
           render json: Alba.serialize(asset)
         end
 
         def destroy
-          asset = Assets::Moderation::Destroy.new.call(**destroy_params)
+          asset = Assets::Activations::Destroy.new.call(**destroy_params)
 
           render json: Alba.serialize(asset)
         end

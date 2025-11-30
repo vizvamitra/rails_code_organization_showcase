@@ -22,7 +22,7 @@ Rails.application.routes.draw do
     namespace :moderation do
       resources :assets, only: %i[index] do
         scope module: :assets do
-          resource :moderation, only: %i[create destroy], controller: 'moderation'
+          resource :activation, only: %i[create destroy]
         end
       end
     end

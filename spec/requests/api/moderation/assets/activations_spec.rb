@@ -1,6 +1,6 @@
 require "rails_helper"
 
-RSpec.describe "api/moderation/assets/:id/moderation", type: :request do
+RSpec.describe "api/moderation/assets/:id/activation", type: :request do
   let(:headers) do
     return {} if !authenticated
     { "Authorization" => "Bearer #{user.access_token}" }
@@ -14,31 +14,45 @@ RSpec.describe "api/moderation/assets/:id/moderation", type: :request do
       "title" => be_a(String),
       "url" => be_a(String),
       "avatar_url" => be_a(String),
-      "moderated" => be_truthy.or(be_falsey),
+      "active" => be_truthy.or(be_falsey),
       "access_acquired" => be_truthy.or(be_falsey)
     }
   end
 
   let!(:client) { create(:client) }
   let!(:user) { create(:user, client:) }
-  let!(:asset) { create(:moderation_asset, client:, moderated: initial_moderated) }
+  let!(:asset) do
+    create(:moderation_asset, client:, active: initial_status, access_acquired:)
+  end
   let!(:page) { create(:acme_integration_page, public_id: asset.public_id) }
 
   let(:authenticated) { true }
   let(:asset_id) { asset.id }
+  let(:access_acquired) { true }
 
   before { request.call }
 
-  describe "POST /api/moderation/assets/:id/moderation" do
-    subject(:request) { -> { post("/api/moderation/assets/#{asset_id}/moderation", headers:) } }
+  describe "POST /api/moderation/assets/:id/activation" do
+    subject(:request) do
+      -> { post("/api/moderation/assets/#{asset_id}/activation", headers:) }
+    end
 
-    let(:initial_moderated) { false }
+    let(:initial_status) { false }
 
-    context "when asset exists" do
+    context "when asset is moderatable" do
       it "responds with 200 and the asset" do
         expect(response).to have_http_status(200)
         expect(json["data"]).to match(asset_object)
-        expect(json["data"]["moderated"]).to be(true)
+        expect(json["data"]["active"]).to be(true)
+      end
+    end
+
+    context "when asset is not moderatable" do
+      let(:access_acquired) { false }
+
+      it "responds with 409" do
+        expect(response).to have_http_status(409)
+        expect(json["errors"].first).to include("title" => "conflict")
       end
     end
 
@@ -61,16 +75,16 @@ RSpec.describe "api/moderation/assets/:id/moderation", type: :request do
     end
   end
 
-  describe "DELETE /api/moderation/assets/:id/moderation" do
-    subject(:request) { -> { delete("/api/moderation/assets/#{asset_id}/moderation", headers:) } }
+  describe "DELETE /api/moderation/assets/:id/activation" do
+    subject(:request) { -> { delete("/api/moderation/assets/#{asset_id}/activation", headers:) } }
 
-    let(:initial_moderated) { true }
+    let(:initial_status) { true }
 
     context "when asset exists" do
       it "responds with 200 and the asset" do
         expect(response).to have_http_status(200)
         expect(json["data"]).to match(asset_object)
-        expect(json["data"]["moderated"]).to be(false)
+        expect(json["data"]["active"]).to be(false)
       end
     end
 

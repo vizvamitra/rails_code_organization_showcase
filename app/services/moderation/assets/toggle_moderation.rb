@@ -7,17 +7,19 @@ module Moderation
 
       # @param client_id [Integer]
       # @param asset_id [Integer]
-      # @param moderated [Boolean]
+      # @param active [Boolean]
       #
       # @return [Moderation::Asset]
       # @raise [ActiveRecord::RecordNotFound]
       #
-      def call(client_id:, asset_id:, moderated:)
+      def call(client_id:, asset_id:, active:)
         asset = Asset.where(client_id:).find(asset_id)
-        return asset if asset.moderated == moderated
+        return asset if asset.active == active
+
+        raise AssetNotModeratableError if active && !asset.access_acquired?
 
         ApplicationRecord.transaction do
-          asset.update!(moderated:)
+          asset.update!(active:)
           toggle_comment_retrieval(asset)
         end
 
@@ -31,7 +33,7 @@ module Moderation
       def toggle_comment_retrieval(asset)
         _acme_integration.toggle_page_comment_retrieval(
           public_id: asset.public_id,
-          retrieve_comments: asset.moderated
+          retrieve_comments: asset.active
         )
       end
     end
