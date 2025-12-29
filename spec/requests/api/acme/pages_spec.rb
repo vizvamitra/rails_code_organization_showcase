@@ -13,6 +13,7 @@ RSpec.describe "api/acme/pages", type: :request do
       {
         "id" => be_an(Integer),
         "client_id" => be_an(Integer),
+        "public_id" => be_a(String),
         "external_id" => be_a(String),
         "name" => be_a(String),
         "avatar_url" => be_a(String),

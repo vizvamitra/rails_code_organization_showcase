@@ -10,7 +10,7 @@ module AcmeIntegration
       private
 
       def syncable_identities
-        Identity.with_valid_token
+        Identity.with_valid_token.order(:client_id, :id)
       end
 
       def schedule_discovery(identity_id)

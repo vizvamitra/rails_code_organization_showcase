@@ -11,7 +11,7 @@ module AcmeIntegration
     end
 
     def schedule_pages_discovery
-      with_logging { AcmeIntegration::Pages::ScheduleDyscovery.new.call }
+      with_logging { AcmeIntegration::Pages::ScheduleDiscovery.new.call }
     end
 
     def toggle_page_comment_retrieval(**params)

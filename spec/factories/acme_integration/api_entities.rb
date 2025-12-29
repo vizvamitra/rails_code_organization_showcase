@@ -4,6 +4,11 @@ FactoryBot.define do
     initialize_with { new(id) }
   end
 
+  factory :acme_access_token, class: String do
+    token { SecureRandom.hex(16) }
+    initialize_with { new(token) }
+  end
+
   factory :acme_api_entity, class: Hash do
     initialize_with { attributes.stringify_keys.reject { |_, v| v.nil? } }
   end

@@ -1,31 +1,36 @@
 require "rails_helper"
 
 RSpec.describe "api/acme/identities", type: :request do
+  let(:identity_object) do
+    {
+      "id" => be_an(Integer),
+      "client_id" => be_an(Integer),
+      "external_id" => be_a(String),
+      "name" => be_a(String),
+      "avatar_url" => be_a(String),
+      "access_status" => be_a(String),
+      "access_token_valid" => be_truthy.or(be_falsey),
+      "can_discover_pages" => be_truthy.or(be_falsey),
+      "can_moderate_comments" => be_truthy.or(be_falsey)
+    }
+  end
+
+  let(:headers) do
+    return {} if !authenticated
+    { "Authorization" => "Bearer #{user.access_token}" }
+  end
+
+  let!(:client) { create(:client) }
+  let!(:user) { create(:user, client:) }
+
+  let(:authenticated) { true }
+
   describe "POST /api/acme/identities" do
     subject(:request) { -> { post("/api/acme/identities", params:, headers:) } }
 
-    let!(:user) { create(:user) }
-    let(:identity) { create(:acme_integration_identity) }
-    let(:headers) do
-      authenticated ? {"Authorization": "Bearer #{user.access_token}"} : {}
-    end
-
-    let(:identity_object) do
-      {
-        "id" => be_an(Integer),
-        "client_id" => be_an(Integer),
-        "external_id" => be_a(String),
-        "name" => be_a(String),
-        "avatar_url" => be_a(String),
-        "access_status" => be_a(String),
-        "access_token_valid" => be_truthy.or(be_falsey),
-        "can_discover_pages" => be_truthy.or(be_falsey),
-        "can_moderate_comments" => be_truthy.or(be_falsey)
-      }
-    end
-
-    let(:authenticated) { true }
     let(:params) { { identity: { access_token: "whatever" } } }
+    let(:identity) { create(:acme_integration_identity) }
+
     let(:create_result) { ->(*) { identity } }
 
     before do
@@ -36,8 +41,8 @@ RSpec.describe "api/acme/identities", type: :request do
     end
 
     context "when access_token is valid" do
-      it "responds with 200 and Acme Identity object" do
-        expect(response).to have_http_status(200)
+      it "responds with 201 and Acme Identity object" do
+        expect(response).to have_http_status(201)
         expect(json["data"]).to match(identity_object)
       end
     end
@@ -47,7 +52,7 @@ RSpec.describe "api/acme/identities", type: :request do
 
       it "responds with 422" do
         expect(response).to have_http_status(422)
-        expect(json["errors"].first).to include("title" => "unprocessable_entity")
+        expect(json["errors"].first).to include("title" => "unprocessable_content")
       end
     end
 
@@ -56,7 +61,7 @@ RSpec.describe "api/acme/identities", type: :request do
 
       it "responds with 422" do
         expect(response).to have_http_status(422)
-        expect(json["errors"].first).to include("title" => "unprocessable_entity")
+        expect(json["errors"].first).to include("title" => "unprocessable_content")
       end
     end
 

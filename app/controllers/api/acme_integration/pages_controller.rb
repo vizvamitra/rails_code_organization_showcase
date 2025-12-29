@@ -7,7 +7,7 @@ module Api
           .order(name: :asc)
           .then { paginate(_1) }
 
-        render json: Alba.serialize(pages, root_key: "data")
+        render json: Alba.serialize(pages, root_key: :data)
       end
     end
   end

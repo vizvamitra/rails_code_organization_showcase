@@ -4,7 +4,7 @@ module Api
       def index
         assets = Assets::Index.new.call(**index_params).then { paginate(_1) }
 
-        render json: Alba.serialize(assets, root_key: "data")
+        render json: Alba.serialize(assets, root_key: :data)
       end
 
       private

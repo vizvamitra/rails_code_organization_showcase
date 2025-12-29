@@ -22,13 +22,13 @@ module AcmeIntegration
       def call(identity_id:)
         identity = Identity.find(identity_id)
 
-        sync(identity)
+        identity = sync(identity)
 
         discoverable = fetch_pages(identity)
         undiscoverable = undiscoverable_pages(identity, discoverable)
 
         ActiveRecord::Base.transaction do
-          discoverable.each { |attributes| actualize(identity, attributes) }
+          discoverable.each { |attributes| actualize_page(identity, attributes) }
           undiscoverable.each { |page| cleanup_access_provider(page) }
         end
       end
@@ -51,7 +51,7 @@ module AcmeIntegration
         identity.pages.where.not(external_id: discoverable.map(&:id))
       end
 
-      def actualize(identity, attributes)
+      def actualize_page(identity, attributes)
         _actualize.call(identity:, attributes:)
       end
 

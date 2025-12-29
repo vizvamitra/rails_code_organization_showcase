@@ -9,7 +9,7 @@ module AcmeIntegration
 
       # @param identity [AcmeIntegration::Identity]
       #
-      # @return [void]
+      # @return [AcmeIntegration::Identity]
       # @raise [Acme::Error]
       #
       def call(identity:)
@@ -19,6 +19,8 @@ module AcmeIntegration
           identity = sync(identity, attributes)
           identity.update!(last_synced_at: Time.zone.now)
         end
+
+        identity
       end
 
       private

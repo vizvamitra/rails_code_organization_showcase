@@ -3,7 +3,7 @@ module Api
     class IdentitiesController < ApiController
       def create
         identity = Identities::Create.new.call(**create_params)
-        render json: Alba.serialize(identity)
+        render json: Alba.serialize(identity), status: :created
       end
 
       private

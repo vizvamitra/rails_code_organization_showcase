@@ -83,7 +83,7 @@ GEM
       uri (>= 0.13.1)
     addressable (2.8.7)
       public_suffix (>= 2.0.2, < 7.0)
-    alba (3.6.0)
+    alba (3.10.0)
     arbre (2.2.1)
       activesupport (>= 7.0)
     ast (2.4.2)
@@ -127,6 +127,12 @@ GEM
     factory_bot_rails (6.4.4)
       factory_bot (~> 6.5)
       railties (>= 5.0.0)
+    faraday (2.14.0)
+      faraday-net_http (>= 2.0, < 3.5)
+      json
+      logger
+    faraday-net_http (3.4.2)
+      net-http (~> 0.5)
     formtastic (5.0.0)
       actionpack (>= 6.0.0)
     formtastic_i18n (0.7.0)
@@ -198,6 +204,8 @@ GEM
     mini_portile2 (2.8.9)
     minitest (5.26.1)
     msgpack (1.7.5)
+    net-http (0.9.1)
+      uri (>= 0.11.1)
     net-imap (0.5.1)
       date
       net-protocol
@@ -460,6 +468,7 @@ DEPENDENCIES
   cssbundling-rails (~> 1.4)
   debug
   factory_bot_rails
+  faraday (~> 2.14)
   importmap-rails
   jbuilder
   kamal

@@ -14,6 +14,7 @@ RSpec.describe "api/moderation/assets", type: :request do
         "id" => be_an(Integer),
         "client_id" => be_an(Integer),
         "source" => be_a(String),
+        "public_id" => be_a(String),
         "title" => be_a(String),
         "url" => be_a(String),
         "avatar_url" => be_a(String),

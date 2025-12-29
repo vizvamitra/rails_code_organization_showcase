@@ -1,6 +1,6 @@
 module AcmeIntegration
   class PageSerializer < ApplicationSerializer
-    attributes :id, :client_id, :external_id, :name, :avatar_url, :status,
-               :discoverable, :manager_role_granted
+    attributes :id, :public_id, :client_id, :external_id, :name, :avatar_url,
+               :status, :discoverable, :manager_role_granted
   end
 end
