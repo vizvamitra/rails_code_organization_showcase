@@ -42,7 +42,7 @@ gem "thruster", require: false
 
 gem 'alba'
 gem 'kaminari'
-gem 'activeadmin', '~> 4.0.0.beta15'
+gem 'activeadmin', '~> 4.0.0.beta19'
 gem 'faraday', '~> 2.14'
 
 group :development, :test do
