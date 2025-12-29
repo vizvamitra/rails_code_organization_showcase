@@ -53,6 +53,10 @@ module HttpErrors
   NotAcceptableError = Class.new(Error)
   register(NotAcceptableError)
 
+  # 409
+  ConflictError = Class.new(Error)
+  register(ConflictError)
+
   # 422
   UnprocessableContentError = Class.new(Error)
   register(UnprocessableContentError)

@@ -5,6 +5,7 @@ RSpec.describe Moderation::Assets::List do
     described_class.new.call(
       client_id:,
       source:,
+      title:,
       access_acquired:,
       order:
     )
@@ -23,6 +24,7 @@ RSpec.describe Moderation::Assets::List do
 
   let(:client_id) { client.id }
   let(:source) { nil }
+  let(:title) { nil }
   let(:access_acquired) { nil }
   let(:order) { nil }
 
@@ -34,6 +36,12 @@ RSpec.describe Moderation::Assets::List do
 
   context "when filtering by source" do
     let(:source) { "acme" }
+    it { expect(list_assets).to eq([assets[0]]) }
+  end
+
+  context "when filtering by title" do
+    let(:title) { "Be" }
+
     it { expect(list_assets).to eq([assets[0]]) }
   end
 

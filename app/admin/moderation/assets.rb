@@ -4,22 +4,27 @@ ActiveAdmin.register Moderation::Asset do
   actions :index, :show
   menu label: "Moderation: Assets"
 
-  action_item :pause_moderation, only: :show, if: -> { resource.moderated } do
+  scope :all, default: true
+  scope :active
+  scope :paused
+  scope :access_error
+
+  action_item :pause_moderation, only: :show, if: -> { resource.active } do
     link_to(
       "Pause moderation",
       [:pause_moderation, :admin, resource],
       method: :post,
-      class: "px-3 py-2 bg-red-50 dark:bg-red-800 rounded-lg",
+      class: "action-item-button danger",
       data: { confirm: "Are you sure?" }
     )
   end
 
-  action_item :activate_moderation, only: :show, if: -> { !resource.moderated } do
+  action_item :activate_moderation, only: :show, if: -> { !resource.active } do
     link_to(
       "Activate moderation",
       [:activate_moderation, :admin, resource],
       method: :post,
-      class: "px-3 py-2 bg-gray-200 dark:bg-gray-700 rounded-lg",
+      class: "action-item-button danger",
       data: { confirm: "Are you sure?" }
     )
   end
@@ -29,23 +34,30 @@ ActiveAdmin.register Moderation::Asset do
   filter :client
   filter :source, as: :select, collection: Moderation::Asset.sources
   filter :title
-  filter :moderated
-  filter :access_acquired
   filter :created_at
   filter :updated_at
 
   index download_links: false do
     id_column
-    column(:client, sortable: :client_id)
-    column(:source) { status_tag(_1.source) }
+    column(:source) { status_tag(_1.source, class: _1.source) }
     column(:title) do |asset|
-      link_to(asset.title, [:admin, asset], class: "flex items-center gap-2")
+      link_to(asset.title, [:admin, asset])
     end
-    column(:url) { link_to("🔗", _1.url, target: "_blank") }
-    column :moderated
-    column :access_acquired
-    column :created_at
-    column :updated_at
+    column(:url) do
+      a(href: _1.url, target: "_blank") do
+        text_node(<<~HTML.html_safe)
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" style="width: 1.2em; height: 1.2em; min-width: 1.2em;" viewBox="0 0 24 24"><path d="M15 3h6v6M10 14 21 3M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/></svg>
+        HTML
+      end
+    end
+    column :active
+    column(:access_acquired) do
+      status_tag(
+        _1.access_acquired,
+        class: ('danger' if _1.active && !_1.access_acquired)
+      )
+    end
+    column(:client, sortable: :client_id)
     actions
   end
 
@@ -54,12 +66,24 @@ ActiveAdmin.register Moderation::Asset do
       row :id
       row :client
       row(:public_id)
-      row(:source) { status_tag(_1.source) }
+      row(:source) { status_tag(_1.source, class: _1.source) }
       row :title
       row(:avatar) { image_tag(_1.avatar_url, size: "64x64", class: "rounded-full") }
-      row(:url) { link_to(_1.url, target: "_blank") }
-      row :moderated
-      row :access_acquired
+      row(:url) do
+        a(_1.url, href: _1.url, target: "_blank", class: "flex items-center gap-1") do
+          text_node(<<~HTML.html_safe)
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" style="width: 1.2em; height: 1.2em; min-width: 1.2em;" viewBox="0 0 24 24"><path d="M15 3h6v6M10 14 21 3M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/></svg>
+          HTML
+          # link_to(_1.url, nil, target: "_blank")
+        end
+      end
+      row :active
+      row(:access_acquired) do
+        status_tag(
+          _1.access_acquired,
+          class: ('danger' if _1.active && !_1.access_acquired)
+        )
+      end
       row :created_at
       row :updated_at
     end
@@ -69,7 +93,7 @@ ActiveAdmin.register Moderation::Asset do
     Moderation::Interface.new.toggle_asset_moderation(
       client_id: resource.client_id,
       asset_id: resource.id,
-      moderated: false
+      active: false
     )
     redirect_to request.referer, notice: "Moderation paused"
   end
@@ -78,7 +102,7 @@ ActiveAdmin.register Moderation::Asset do
     Moderation::Interface.new.toggle_asset_moderation(
       client_id: resource.client_id,
       asset_id: resource.id,
-      moderated: true
+      active: true
     )
     redirect_to request.referer, notice: "Moderation activated"
   end

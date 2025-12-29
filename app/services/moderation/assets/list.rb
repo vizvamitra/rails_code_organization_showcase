@@ -1,23 +1,25 @@
 module Moderation
   module Assets
     class List
-      ORDER_FIELDS = %w[source title access_acquired]
+      ORDER_FIELDS = %w[source title active access_acquired]
       DEFAULT_ORDER = { title: :asc }
 
       # @param client_id [Integer]
       # @param source [String, nil]
+      # @param title [String, nil]
       # @param access_acquired [Boolean, nil]
       # @param order [String, nil]
       #
       # @return [ActiveRecord::Relation]
       # @raise [ActiveRecord::RecordNotFound]
       #
-      def call(client_id:, source: nil, access_acquired: nil, order: nil)
+      def call(client_id:, source: nil, title: nil, access_acquired: nil, order: nil)
         client = Client.find(client_id)
 
         client
-          .assets
+          .moderation_assets
           .then { |scope| filter_by_source(scope, source) }
+          .then { |scope| filter_by_title(scope, title) }
           .then { |scope| filter_by_access_status(scope, access_acquired) }
           .then { |scope| apply_ordering(scope, order) }
       end
@@ -26,6 +28,10 @@ module Moderation
 
       def filter_by_source(scope, source)
         source.nil? ? scope : scope.where(source:)
+      end
+
+      def filter_by_title(scope, title)
+        title.nil? ? scope : scope.where("LOWER(title) LIKE ?", "%#{title.downcase}%")
       end
 
       def filter_by_access_status(scope, access_acquired)

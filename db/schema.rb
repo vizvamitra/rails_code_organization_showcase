@@ -54,7 +54,6 @@ ActiveRecord::Schema[8.0].define(version: 2024_11_24_155134) do
 
   create_table "clients", force: :cascade do |t|
     t.string "title"
-    t.boolean "active"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
   end
@@ -62,16 +61,18 @@ ActiveRecord::Schema[8.0].define(version: 2024_11_24_155134) do
   create_table "moderation_assets", force: :cascade do |t|
     t.integer "client_id", null: false
     t.integer "source", null: false
+    t.boolean "active", default: false, null: false
     t.string "public_id", null: false
-    t.string "title"
-    t.string "avatar_url"
+    t.string "external_id", null: false
+    t.string "title", null: false
     t.string "url"
-    t.boolean "moderated", default: false, null: false
+    t.string "avatar_url"
     t.boolean "access_acquired", default: false, null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["client_id", "public_id"], name: "index_moderation_assets_on_client_id_and_public_id"
     t.index ["client_id"], name: "index_moderation_assets_on_client_id"
+    t.index ["external_id"], name: "index_moderation_assets_on_external_id", unique: true, where: "active IS TRUE /*application='Moderato'*/"
     t.index ["public_id"], name: "index_moderation_assets_on_public_id", unique: true
   end
 

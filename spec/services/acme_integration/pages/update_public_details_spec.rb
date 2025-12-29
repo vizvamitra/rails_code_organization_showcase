@@ -23,6 +23,7 @@ RSpec.describe AcmeIntegration::Pages::UpdatePublicDetails do
       client_id: page.client_id,
       source: :acme,
       public_id: page.public_id,
+      external_id: page.external_id,
       title: "test",
       url: page.url,
       avatar_url: "https://foo.bar"
