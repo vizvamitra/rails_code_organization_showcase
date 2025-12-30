@@ -21,11 +21,11 @@ module AcmeIntegration
       attr_reader :_moderation
 
       def notify_moderation(page)
-        _moderation.sync_asset(
+        _moderation.sync_comment_feed(
           client_id: page.client_id,
-          source: :acme,
+          platform: :acme,
           public_id: page.public_id,
-          external_id: page.external_id,
+          upstream_id: page.facebook_id,
           title: page.name,
           url: page.url,
           avatar_url: page.avatar_url

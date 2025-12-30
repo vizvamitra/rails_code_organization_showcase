@@ -1,41 +1,41 @@
 module Moderation
-  module Assets
+  module CommentFeeds
     class List
-      ORDER_FIELDS = %w[source title active access_acquired]
+      ORDER_FIELDS = %w[platform title moderated connected]
       DEFAULT_ORDER = { title: :asc }
 
       # @param client_id [Integer]
-      # @param source [String, nil]
+      # @param platform [String, nil]
       # @param title [String, nil]
-      # @param access_acquired [Boolean, nil]
+      # @param connected [Boolean, nil]
       # @param order [String, nil]
       #
       # @return [ActiveRecord::Relation]
       # @raise [ActiveRecord::RecordNotFound]
       #
-      def call(client_id:, source: nil, title: nil, access_acquired: nil, order: nil)
+      def call(client_id:, platform: nil, title: nil, connected: nil, order: nil)
         client = Client.find(client_id)
 
         client
-          .moderation_assets
-          .then { |scope| filter_by_source(scope, source) }
+          .moderation_comment_feeds
+          .then { |scope| filter_by_platform(scope, platform) }
           .then { |scope| filter_by_title(scope, title) }
-          .then { |scope| filter_by_access_status(scope, access_acquired) }
+          .then { |scope| filter_by_connection_status(scope, connected) }
           .then { |scope| apply_ordering(scope, order) }
       end
 
       private
 
-      def filter_by_source(scope, source)
-        source.nil? ? scope : scope.where(source:)
+      def filter_by_platform(scope, platform)
+        platform.nil? ? scope : scope.where(platform:)
       end
 
       def filter_by_title(scope, title)
         title.nil? ? scope : scope.where("LOWER(title) LIKE ?", "%#{title.downcase}%")
       end
 
-      def filter_by_access_status(scope, access_acquired)
-        access_acquired.nil? ? scope : scope.where(access_acquired:)
+      def filter_by_connection_status(scope, connected)
+        connected.nil? ? scope : scope.where(connected:)
       end
 
       def apply_ordering(scope, order)

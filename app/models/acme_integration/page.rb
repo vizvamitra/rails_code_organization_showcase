@@ -5,10 +5,10 @@ module AcmeIntegration
 
     enum :status, { undiscoverable: 0, inoperable: 1, operable: 2 }
 
-    validates :external_id, presence: true, uniqueness: { scope: :client_id }
+    validates :facebook_id, presence: true, uniqueness: { scope: :client_id }
 
     def url
-      "https://www.example.com/page/#{external_id}"
+      "https://www.example.com/page/#{facebook_id}"
     end
   end
 end

@@ -1,19 +1,19 @@
 module Moderation
   class Interface < Subsystems::Interface
-    def sync_asset(**params)
-      with_logging { Moderation::Assets::Sync.new.call(**params) }
+    def sync_comment_feed(**params)
+      with_logging { Moderation::CommentFeeds::Sync.new.call(**params) }
     end
 
-    def toggle_asset_access_status(**params)
-      with_logging { Moderation::Assets::ToggleAccessStatus.new.call(**params) }
+    def toggle_comment_feed_connection_status(**params)
+      with_logging { Moderation::CommentFeeds::ToggleConnectionStatus.new.call(**params) }
     end
 
-    def list_assets(**params)
-      Moderation::Assets::List.new.call(**params)
+    def list_comment_feeds(**params)
+      Moderation::CommentFeeds::List.new.call(**params)
     end
 
-    def toggle_asset_moderation(**params)
-      with_logging { Moderation::Assets::ToggleModeration.new.call(**params) }
+    def toggle_comment_feed_moderation(**params)
+      with_logging { Moderation::CommentFeeds::ToggleModeration.new.call(**params) }
     end
   end
 end

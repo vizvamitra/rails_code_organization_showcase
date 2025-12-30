@@ -35,9 +35,9 @@ module AcmeIntegration
       end
 
       def notify_moderation(page)
-        _moderation.toggle_asset_access_status(
+        _moderation.toggle_comment_feed_connection_status(
           public_id: page.public_id,
-          access_acquired: page.operable?
+          connected: page.operable?
         )
       end
     end

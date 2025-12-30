@@ -31,10 +31,10 @@ module AcmeIntegration
       attr_reader :_is_preferred_access_provider, :_update_public_details,
                   :_update_access_details
 
-      def find_or_build(client_id, external_id)
+      def find_or_build(client_id, facebook_id)
         Page
           .create_with(public_id: SecureRandom.uuid)
-          .find_or_initialize_by(client_id:, external_id:)
+          .find_or_initialize_by(client_id:, facebook_id:)
       end
 
       def prefered_provider?(page, identity, attributes)

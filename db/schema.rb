@@ -13,7 +13,7 @@
 ActiveRecord::Schema[8.0].define(version: 2024_11_24_155134) do
   create_table "acme_integration_identities", force: :cascade do |t|
     t.integer "client_id", null: false
-    t.string "external_id", null: false
+    t.string "facebook_id", null: false
     t.string "name", null: false
     t.string "avatar_url", null: false
     t.string "access_token"
@@ -28,7 +28,7 @@ ActiveRecord::Schema[8.0].define(version: 2024_11_24_155134) do
     t.datetime "last_synced_at"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.index ["client_id", "external_id"], name: "index_acme_integration_identities_on_client_id_and_external_id", unique: true
+    t.index ["client_id", "facebook_id"], name: "index_acme_integration_identities_on_client_id_and_facebook_id", unique: true
     t.index ["client_id"], name: "index_acme_integration_identities_on_client_id"
   end
 
@@ -36,7 +36,7 @@ ActiveRecord::Schema[8.0].define(version: 2024_11_24_155134) do
     t.integer "client_id", null: false
     t.integer "access_provider_id"
     t.string "public_id", null: false
-    t.string "external_id", null: false
+    t.string "facebook_id", null: false
     t.string "name"
     t.string "avatar_url"
     t.boolean "manager_role_granted", default: false, null: false
@@ -47,8 +47,8 @@ ActiveRecord::Schema[8.0].define(version: 2024_11_24_155134) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["access_provider_id"], name: "index_acme_integration_pages_on_access_provider_id"
-    t.index ["client_id", "external_id"], name: "index_acme_integration_pages_on_client_id_and_external_id", unique: true
-    t.index ["external_id"], name: "index_acme_integration_pages_on_external_id"
+    t.index ["client_id", "facebook_id"], name: "index_acme_integration_pages_on_client_id_and_facebook_id", unique: true
+    t.index ["facebook_id"], name: "index_acme_integration_pages_on_facebook_id"
     t.index ["public_id"], name: "index_acme_integration_pages_on_public_id", unique: true
   end
 
@@ -58,22 +58,22 @@ ActiveRecord::Schema[8.0].define(version: 2024_11_24_155134) do
     t.datetime "updated_at", null: false
   end
 
-  create_table "moderation_assets", force: :cascade do |t|
+  create_table "moderation_comment_feeds", force: :cascade do |t|
     t.integer "client_id", null: false
-    t.integer "source", null: false
-    t.boolean "active", default: false, null: false
+    t.integer "platform", null: false
+    t.boolean "moderated", default: false, null: false
     t.string "public_id", null: false
-    t.string "external_id", null: false
+    t.string "upstream_id", null: false
     t.string "title", null: false
     t.string "url"
     t.string "avatar_url"
-    t.boolean "access_acquired", default: false, null: false
+    t.boolean "connected", default: false, null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.index ["client_id", "public_id"], name: "index_moderation_assets_on_client_id_and_public_id"
-    t.index ["client_id"], name: "index_moderation_assets_on_client_id"
-    t.index ["external_id"], name: "index_moderation_assets_on_external_id", unique: true, where: "active IS TRUE /*application='Moderato'*/"
-    t.index ["public_id"], name: "index_moderation_assets_on_public_id", unique: true
+    t.index ["client_id", "public_id"], name: "index_moderation_comment_feeds_on_client_id_and_public_id"
+    t.index ["client_id"], name: "index_moderation_comment_feeds_on_client_id"
+    t.index ["public_id"], name: "index_moderation_comment_feeds_on_public_id", unique: true
+    t.index ["upstream_id"], name: "index_moderation_comment_feeds_on_upstream_id", unique: true, where: "moderated IS TRUE"
   end
 
   create_table "sessions", force: :cascade do |t|

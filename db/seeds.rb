@@ -20,7 +20,7 @@ user = client.users.create!(
 
 AcmeIntegration::Identity.delete_all
 identity = client.acme_identities.create!(
-  external_id: "qwerty",
+  facebook_id: "qwerty",
   name: "Jane Doe",
   access_token: SecureRandom.hex(10),
   avatar_url: "https://example.com/avatar.jpg",
@@ -36,15 +36,15 @@ identity = client.acme_identities.create!(
 )
 
 AcmeIntegration::Page.delete_all
-[ #              name |         status | manager | active | access_acquired
-  [  "What was that?", :undiscoverable,    false,   false,           false],
-  ["Not in this life",     :inoperable,    false,   false,           false],
-  ["This one broken!",     :inoperable,    false,    true,           false],
-  [    "You're good!",       :operable,     true,    true,            true]
-].each do |name, status, manager_role_granted, active, access_acquired|
+[ #              name |         status | manager | moderated | connected
+  [  "What was that?", :undiscoverable,    false,      false,      false],
+  ["Not in this life",     :inoperable,    false,      false,      false],
+  ["This one broken!",     :inoperable,    false,       true,      false],
+  [    "You're good!",       :operable,     true,       true,       true]
+].each do |name, status, manager_role_granted, moderated, connected|
   page = client.acme_pages.create!(
     access_provider: identity,
-    external_id: SecureRandom.hex(8),
+    facebook_id: SecureRandom.hex(8),
     public_id: SecureRandom.uuid,
     name:,
     avatar_url: "https://i.pravatar.cc/150?u=#{name.gsub(/\s/, '+')}",
@@ -53,14 +53,14 @@ AcmeIntegration::Page.delete_all
     last_synced_at: 1.day.ago
   )
 
-  asset = client.moderation_assets.create!(
-    source: :acme,
-    active:,
+  client.moderation_comment_feeds.create!(
+    platform: :acme,
     public_id: page.public_id,
-    external_id: page.external_id,
+    upstream_id: page.facebook_id,
     title: page.name,
-    avatar_url: page.avatar_url,
     url: page.url,
-    access_acquired:
+    avatar_url: page.avatar_url,
+    moderated:,
+    connected:
   )
 end

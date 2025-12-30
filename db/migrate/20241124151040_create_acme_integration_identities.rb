@@ -2,7 +2,7 @@ class CreateAcmeIntegrationIdentities < ActiveRecord::Migration[8.0]
   def change
     create_table :acme_integration_identities do |t|
       t.references :client, null: false
-      t.string :external_id, null: false
+      t.string :facebook_id, null: false
       t.string :name, null: false
       t.string :avatar_url, null: false
       t.string :access_token
@@ -18,7 +18,7 @@ class CreateAcmeIntegrationIdentities < ActiveRecord::Migration[8.0]
 
       t.timestamps
 
-      t.index %i[client_id external_id], unique: true
+      t.index %i[client_id facebook_id], unique: true
     end
   end
 end

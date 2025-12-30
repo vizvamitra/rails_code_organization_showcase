@@ -11,7 +11,7 @@ RSpec.describe AcmeIntegration::Pages::UpdatePublicDetails do
 
   let(:page) { create(:acme_integration_page) }
 
-  before { allow(moderation).to receive(:sync_asset) }
+  before { allow(moderation).to receive(:sync_comment_feed) }
 
   it "updates the page and notifies moderation subsystem" do
     expect { update }.to change { page.reload.attributes }.to include(
@@ -19,11 +19,11 @@ RSpec.describe AcmeIntegration::Pages::UpdatePublicDetails do
       "avatar_url" => "https://foo.bar"
     )
 
-    expect(moderation).to have_received(:sync_asset).with(
+    expect(moderation).to have_received(:sync_comment_feed).with(
       client_id: page.client_id,
-      source: :acme,
+      platform: :acme,
       public_id: page.public_id,
-      external_id: page.external_id,
+      upstream_id: page.facebook_id,
       title: "test",
       url: page.url,
       avatar_url: "https://foo.bar"

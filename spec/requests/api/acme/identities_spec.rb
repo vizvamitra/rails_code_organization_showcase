@@ -5,7 +5,7 @@ RSpec.describe "api/acme/identities", type: :request do
     {
       "id" => be_an(Integer),
       "client_id" => be_an(Integer),
-      "external_id" => be_a(String),
+      "facebook_id" => be_a(String),
       "name" => be_a(String),
       "avatar_url" => be_a(String),
       "access_status" => be_a(String),

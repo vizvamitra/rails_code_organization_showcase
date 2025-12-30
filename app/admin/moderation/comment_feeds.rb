@@ -1,15 +1,15 @@
-ActiveAdmin.register Moderation::Asset do
+ActiveAdmin.register Moderation::CommentFeed do
   config.batch_actions = false
 
   actions :index, :show
-  menu label: "Moderation: Assets"
+  menu label: "Moderation: Comment Feeds"
 
   scope :all, default: true
-  scope :active
-  scope :paused
-  scope :access_error
+  scope :moderated
+  scope :not_moderated
+  scope :connection_error
 
-  action_item :pause_moderation, only: :show, if: -> { resource.active } do
+  action_item :pause_moderation, only: :show, if: -> { resource.moderated? } do
     link_to(
       "Pause moderation",
       [:pause_moderation, :admin, resource],
@@ -19,7 +19,7 @@ ActiveAdmin.register Moderation::Asset do
     )
   end
 
-  action_item :activate_moderation, only: :show, if: -> { !resource.active } do
+  action_item :activate_moderation, only: :show, if: -> { !resource.moderated? } do
     link_to(
       "Activate moderation",
       [:activate_moderation, :admin, resource],
@@ -32,16 +32,16 @@ ActiveAdmin.register Moderation::Asset do
   filter :id
   filter :public_id_eq, label: "Public Id"
   filter :client
-  filter :source, as: :select, collection: Moderation::Asset.sources
+  filter :platform, as: :select, collection: Moderation::CommentFeed.platforms
   filter :title
   filter :created_at
   filter :updated_at
 
   index download_links: false do
     id_column
-    column(:source) { status_tag(_1.source, class: _1.source) }
-    column(:title) do |asset|
-      link_to(asset.title, [:admin, asset])
+    column(:platform) { status_tag(_1.platform, class: _1.platform) }
+    column(:title) do |comment_feed|
+      link_to(comment_feed.title, [:admin, comment_feed])
     end
     column(:url) do
       a(href: _1.url, target: "_blank") do
@@ -50,11 +50,11 @@ ActiveAdmin.register Moderation::Asset do
         HTML
       end
     end
-    column :active
-    column(:access_acquired) do
+    column :moderated
+    column(:connected) do
       status_tag(
-        _1.access_acquired,
-        class: ('danger' if _1.active && !_1.access_acquired)
+        _1.connected,
+        class: ('danger' if _1.moderated? && _1.disconnected?)
       )
     end
     column(:client, sortable: :client_id)
@@ -66,7 +66,7 @@ ActiveAdmin.register Moderation::Asset do
       row :id
       row :client
       row(:public_id)
-      row(:source) { status_tag(_1.source, class: _1.source) }
+      row(:platform) { status_tag(_1.platform, class: _1.platform) }
       row :title
       row(:avatar) { image_tag(_1.avatar_url, size: "64x64", class: "rounded-full") }
       row(:url) do
@@ -77,11 +77,11 @@ ActiveAdmin.register Moderation::Asset do
           # link_to(_1.url, nil, target: "_blank")
         end
       end
-      row :active
-      row(:access_acquired) do
+      row :moderated
+      row(:connected) do
         status_tag(
-          _1.access_acquired,
-          class: ('danger' if _1.active && !_1.access_acquired)
+          _1.connected,
+          class: ('danger' if _1.moderated? && _1.disconnected?)
         )
       end
       row :created_at
@@ -90,19 +90,19 @@ ActiveAdmin.register Moderation::Asset do
   end
 
   member_action :pause_moderation, method: :post do
-    Moderation::Interface.new.toggle_asset_moderation(
+    Moderation::Interface.new.toggle_comment_feed_moderation(
       client_id: resource.client_id,
-      asset_id: resource.id,
-      active: false
+      comment_feed_id: resource.id,
+      moderated: false
     )
     redirect_to request.referer, notice: "Moderation paused"
   end
 
   member_action :activate_moderation, method: :post do
-    Moderation::Interface.new.toggle_asset_moderation(
+    Moderation::Interface.new.toggle_comment_feed_moderation(
       client_id: resource.client_id,
-      asset_id: resource.id,
-      active: true
+      comment_feed_id: resource.id,
+      moderated: true
     )
     redirect_to request.referer, notice: "Moderation activated"
   end

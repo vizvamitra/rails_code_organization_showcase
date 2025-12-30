@@ -24,8 +24,8 @@ module ApiHelpers
 
   ### Moderation
 
-  def get_moderation_assets
-    get("api/moderation/assets")['data']
+  def get_moderation_comment_feeds
+    get("api/moderation/comment_feeds")['data']
   end
 
   ### Acme Integration

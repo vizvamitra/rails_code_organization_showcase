@@ -1,12 +1,12 @@
 require "rails_helper"
 
-RSpec.describe Moderation::Assets::Sync do
+RSpec.describe Moderation::CommentFeeds::Sync do
   subject(:sync) do
     described_class.new.call(
       client_id:,
-      source: :acme,
+      platform: :acme,
       public_id:,
-      external_id:,
+      upstream_id:,
       **attributes
     )
   end
@@ -15,7 +15,7 @@ RSpec.describe Moderation::Assets::Sync do
 
   let(:client_id) { client.id }
   let(:public_id) { SecureRandom.uuid }
-  let(:external_id) { SecureRandom.hex(10) }
+  let(:upstream_id) { SecureRandom.hex(10) }
   let(:attributes) do
     {
       title: "test",
@@ -24,15 +24,15 @@ RSpec.describe Moderation::Assets::Sync do
     }
   end
 
-  context "when assets doesn't yet exist" do
-    it "creates new asset" do
+  context "when comment feeds doesn't yet exist" do
+    it "creates new comment feed" do
       expect { sync }
-        .to change(Moderation::Asset, :count).by(1)
-        .and change { client.moderation_assets.exists?(public_id:) }.to(true)
+        .to change(Moderation::CommentFeed, :count).by(1)
+        .and change { client.moderation_comment_feeds.exists?(public_id:) }.to(true)
 
-      expect(client.moderation_assets.find_by(public_id:)).to have_attributes(
-        source: "acme",
-        external_id:,
+      expect(client.moderation_comment_feeds.find_by(public_id:)).to have_attributes(
+        platform: "acme",
+        upstream_id:,
         title: "test",
         url: "example.com",
         avatar_url: "example.com/avatar.png"
@@ -40,26 +40,26 @@ RSpec.describe Moderation::Assets::Sync do
     end
   end
 
-  context "when assets already exists" do
-    let!(:asset) do
+  context "when comment feeds already exists" do
+    let!(:comment_feed) do
       create(
-        :moderation_asset,
+        :moderation_comment_feed,
         client:,
         public_id:,
-        external_id: "0000000000",
+        upstream_id: "0000000000",
         title: "foo",
         url: "bar",
         avatar_url: "baz"
       )
     end
 
-    context "when asset belongs to the given client" do
-      it "updates existing asset" do
+    context "when comment feed belongs to the given client" do
+      it "updates existing comment feed" do
         expect { sync }
-          .to preserve(Moderation::Asset, :count)
-          .and preserve { asset.reload.public_id }
-          .and preserve { asset.reload.external_id }
-          .and change { asset.reload.attributes }.to include(
+          .to preserve(Moderation::CommentFeed, :count)
+          .and preserve { comment_feed.reload.public_id }
+          .and preserve { comment_feed.reload.upstream_id }
+          .and change { comment_feed.reload.attributes }.to include(
             "title" => "test",
             "url" => "example.com",
             "avatar_url" => "example.com/avatar.png"
@@ -67,7 +67,7 @@ RSpec.describe Moderation::Assets::Sync do
       end
     end
 
-    context "when asset belongs to another client" do
+    context "when comment feed belongs to another client" do
       let(:client_id) { 123 }
       it { expect { sync }.to raise_error(ActiveRecord::RecordNotFound) }
     end

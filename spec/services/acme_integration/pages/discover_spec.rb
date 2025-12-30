@@ -32,7 +32,7 @@ RSpec.describe AcmeIntegration::Pages::Discover do
   end
   let(:pages_attributes) do
     [
-      build(:acme_integration_page_attributes, id: pages[0].external_id), # existing
+      build(:acme_integration_page_attributes, id: pages[0].facebook_id), # existing
       build(:acme_integration_page_attributes) # new
     ]
   end

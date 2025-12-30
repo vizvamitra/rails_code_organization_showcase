@@ -1,10 +1,10 @@
 module Moderation
-  module Assets
+  module CommentFeeds
     class Sync
       # @param client_id [Integer]
-      # @param source [Symbol]
+      # @param platform [Symbol]
       # @param public_id [String]
-      # @param external_id [String]
+      # @param upstream_id [String]
       # @param attributes [Hash]
       # @option attributes [String] :title
       # @option attributes [String] :url
@@ -14,21 +14,21 @@ module Moderation
       # @raise [ActiveRecord::RecordNotFound]
       # @raise [NoMatchingPatternError]
       #
-      def call(client_id:, source:, public_id:, external_id:, **attributes)
+      def call(client_id:, platform:, public_id:, upstream_id:, **attributes)
         client = Client.find(client_id)
-        asset = find_or_build(client, source, public_id, external_id)
+        feed = find_or_build(client, platform, public_id, upstream_id)
 
         attributes => { title:, url:, avatar_url: }
-        asset.update!(title:, url:, avatar_url:)
+        feed.update!(title:, url:, avatar_url:)
       end
 
       private
 
-      def find_or_build(client, source, public_id, external_id)
+      def find_or_build(client, platform, public_id, upstream_id)
         client
-          .moderation_assets
-          .create_with(external_id:)
-          .find_or_initialize_by(source:, public_id:)
+          .moderation_comment_feeds
+          .create_with(upstream_id:)
+          .find_or_initialize_by(platform:, public_id:)
       end
     end
   end

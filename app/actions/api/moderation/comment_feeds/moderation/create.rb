@@ -1,15 +1,19 @@
 module Api
   module Moderation
-    module Assets
-      module Activations
+    module CommentFeeds
+      module Moderation
         class Create
           def initialize(moderation: ::Moderation::Interface.new)
             @_moderation = moderation
           end
 
-          def call(client_id:, asset_id:)
-            _moderation.toggle_asset_moderation(client_id:, asset_id:, active: true)
-          rescue ::Moderation::AssetNotModeratableError
+          def call(client_id:, comment_feed_id:)
+            _moderation.toggle_comment_feed_moderation(
+              client_id:,
+              comment_feed_id:,
+              moderated: true
+            )
+          rescue ::Moderation::CommentFeedNotModeratableError
             raise HttpErrors::ConflictError
           end
 

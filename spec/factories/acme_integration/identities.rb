@@ -1,7 +1,7 @@
 FactoryBot.define do
   factory :acme_integration_identity, class: 'AcmeIntegration::Identity' do
     client
-    external_id { build(:acme_id) }
+    facebook_id { build(:acme_id) }
     sequence(:name) { |n| "User #{n}" }
     avatar_url { "https://example.com/avatar.png" }
     full_access

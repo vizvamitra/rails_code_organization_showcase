@@ -31,5 +31,5 @@ en:
   hello: "Hello world"
   activerecord:
     attributes:
-      moderation/asset:
+      moderation/comment_feed:
         public_id: Public ID

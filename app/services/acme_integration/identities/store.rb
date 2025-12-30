@@ -23,8 +23,8 @@ module AcmeIntegration
 
       attr_reader :_refresh_status
 
-      def find_or_build(client, external_id)
-        client.acme_identities.find_or_initialize_by(external_id:)
+      def find_or_build(client, facebook_id)
+        client.acme_identities.find_or_initialize_by(facebook_id:)
       end
 
       def update_attributes(identity, attributes)

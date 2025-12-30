@@ -19,7 +19,7 @@ RSpec.describe AcmeIntegration::Pages::UpdateAccessDetails do
   let(:discoverable) { true }
   let(:manager_role_granted) { true }
 
-  before { allow(moderation).to receive(:toggle_asset_access_status) }
+  before { allow(moderation).to receive(:toggle_comment_feed_connection_status) }
 
   shared_examples "updates the page, setting status to" do |status|
     it "updates the page, setting status to '#{status}'" do
@@ -31,8 +31,8 @@ RSpec.describe AcmeIntegration::Pages::UpdateAccessDetails do
       )
 
       expect(moderation)
-        .to have_received(:toggle_asset_access_status)
-        .with(public_id: page.public_id, access_acquired: status == "operable")
+        .to have_received(:toggle_comment_feed_connection_status)
+        .with(public_id: page.public_id, connected: status == "operable")
     end
   end
 

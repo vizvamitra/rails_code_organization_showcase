@@ -1,7 +1,7 @@
 FactoryBot.define do
   factory :acme_integration_page, class: 'AcmeIntegration::Page' do
     client
-    external_id { SecureRandom.hex(10) }
+    facebook_id { SecureRandom.hex(10) }
     public_id { SecureRandom.uuid }
     sequence(:name) { |n| "Page #{n}" }
     avatar_url { "https://example.com/avatar.png" }
