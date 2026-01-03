@@ -19,7 +19,7 @@ RSpec.describe AcmeIntegration::Pages::Actualize do
 
   let!(:client) { create(:client) }
   let!(:identity) { create(:acme_integration_identity, client:) }
-  let!(:page) { create(:acme_integration_page, facebook_id: attributes.id, client:) }
+  let!(:page) { create(:acme_integration_page, acme_id: attributes.id, client:) }
   let(:attributes) do
     build(:acme_integration_page_attributes, manager_role_granted:)
   end

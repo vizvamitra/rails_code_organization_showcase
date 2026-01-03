@@ -20,7 +20,7 @@ user = client.users.create!(
 
 AcmeIntegration::Identity.delete_all
 identity = client.acme_identities.create!(
-  facebook_id: "qwerty",
+  acme_id: "qwerty",
   name: "Jane Doe",
   access_token: SecureRandom.hex(10),
   avatar_url: "https://example.com/avatar.jpg",
@@ -44,7 +44,7 @@ AcmeIntegration::Page.delete_all
 ].each do |name, status, manager_role_granted, moderated, connected|
   page = client.acme_pages.create!(
     access_provider: identity,
-    facebook_id: SecureRandom.hex(8),
+    acme_id: SecureRandom.hex(8),
     public_id: SecureRandom.uuid,
     name:,
     avatar_url: "https://i.pravatar.cc/150?u=#{name.gsub(/\s/, '+')}",
@@ -56,7 +56,7 @@ AcmeIntegration::Page.delete_all
   client.moderation_comment_feeds.create!(
     platform: :acme,
     public_id: page.public_id,
-    upstream_id: page.facebook_id,
+    upstream_id: page.acme_id,
     title: page.name,
     url: page.url,
     avatar_url: page.avatar_url,

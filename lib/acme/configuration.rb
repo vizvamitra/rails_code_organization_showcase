@@ -8,7 +8,7 @@ module Acme
     end
 
     def to_h
-      { base_url:, retry_limit: retry_limit }
+      { base_url:, retry_limit: }
     end
   end
 end

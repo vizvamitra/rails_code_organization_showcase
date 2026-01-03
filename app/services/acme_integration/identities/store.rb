@@ -5,7 +5,7 @@ module AcmeIntegration
         @_refresh_status = refresh_status
       end
 
-      # @param client [AcmeIntegration::Client]
+      # @param client [Client]
       # @param attributes [AcmeIntegration::Identities::Attributes]
       #
       # @return [AcmeIntegration::Identity]
@@ -23,8 +23,8 @@ module AcmeIntegration
 
       attr_reader :_refresh_status
 
-      def find_or_build(client, facebook_id)
-        client.acme_identities.find_or_initialize_by(facebook_id:)
+      def find_or_build(client, acme_id)
+        client.acme_identities.find_or_initialize_by(acme_id:)
       end
 
       def update_attributes(identity, attributes)

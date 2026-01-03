@@ -13,7 +13,7 @@ RSpec.describe AcmeIntegration::Identities::Sync do
     create(:acme_integration_identity, client:, access_token: "whatever")
   end
   let(:attributes) do
-    build(:acme_integration_identity_attributes, id: identity.facebook_id)
+    build(:acme_integration_identity_attributes, id: identity.acme_id)
   end
 
   let(:fetching_error) { nil }
@@ -44,7 +44,7 @@ RSpec.describe AcmeIntegration::Identities::Sync do
       expect(store_identity).to have_received(:call).with(
         client:,
         attributes: have_attributes(
-          id: identity.facebook_id,
+          id: identity.acme_id,
           name: identity.name,
           avatar_url: identity.avatar_url,
           access_token: nil,

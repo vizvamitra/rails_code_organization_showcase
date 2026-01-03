@@ -17,12 +17,12 @@ RSpec.describe "Acme page discovery", type: :feature, jobs: :inline do
     then_the_page_should_be_operable
     and_the_corresponding_comment_feed_should_appear_as_connected
 
-    when_clients_acme_user_looses_manager_role_over_the_page
+    when_clients_acme_user_loses_manager_role_over_the_page
     and_page_discovery_happens
     then_the_page_should_be_inoperable
     and_the_corresponding_comment_feed_should_appear_as_disconnected
 
-    when_clients_acme_user_looses_access_to_the_page
+    when_clients_acme_user_loses_access_to_the_page
     and_page_discovery_happens
     then_the_page_should_be_undiscoverable
     and_the_corresponding_comment_feed_should_appear_as_disconnected
@@ -46,7 +46,7 @@ RSpec.describe "Acme page discovery", type: :feature, jobs: :inline do
   def when_the_client_authorizes_acme_user
     response = create_acme_identity(acme_token)
     expect(last_response.status).to eq(201)
-    expect(response).to include('facebook_id' => acme_identity['id'])
+    expect(response).to include('acme_id' => acme_identity['id'])
 
     @acme_identity = response
   end
@@ -56,7 +56,7 @@ RSpec.describe "Acme page discovery", type: :feature, jobs: :inline do
     expect(pages.size).to eq(1)
 
     expect(pages.first).to include(
-      'facebook_id' => acme_api_page['id'],
+      'acme_id' => acme_api_page['id'],
       'status' => 'operable'
     )
 
@@ -75,7 +75,7 @@ RSpec.describe "Acme page discovery", type: :feature, jobs: :inline do
     @comment_feed = comment_feeds.first
   end
 
-  def when_clients_acme_user_looses_manager_role_over_the_page
+  def when_clients_acme_user_loses_manager_role_over_the_page
     acme_api_page['roles'] = ['viewer']
     stub_acme_pages(acme_token, [acme_api_page])
   end
@@ -89,7 +89,7 @@ RSpec.describe "Acme page discovery", type: :feature, jobs: :inline do
     expect(pages.size).to eq(1)
 
     expect(pages.first).to include(
-      'facebook_id' => acme_api_page['id'],
+      'acme_id' => acme_api_page['id'],
       'status' => 'inoperable'
     )
 
@@ -108,7 +108,7 @@ RSpec.describe "Acme page discovery", type: :feature, jobs: :inline do
     @comment_feed = comment_feeds.first
   end
 
-  def when_clients_acme_user_looses_access_to_the_page
+  def when_clients_acme_user_loses_access_to_the_page
     stub_acme_pages(acme_token, [])
   end
 
@@ -117,7 +117,7 @@ RSpec.describe "Acme page discovery", type: :feature, jobs: :inline do
     expect(pages.size).to eq(1)
 
     expect(pages.first).to include(
-      'facebook_id' => acme_api_page['id'],
+      'acme_id' => acme_api_page['id'],
       'status' => 'undiscoverable'
     )
 
@@ -140,7 +140,7 @@ RSpec.describe "Acme page discovery", type: :feature, jobs: :inline do
     expect(pages.size).to eq(1)
 
     expect(pages.first).to include(
-      'facebook_id' => acme_api_page['id'],
+      'acme_id' => acme_api_page['id'],
       'name' => 'Testing',
       'avatar_url' => 'https://example.com/testing.png'
     )

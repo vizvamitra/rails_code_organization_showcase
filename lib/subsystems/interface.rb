@@ -2,7 +2,7 @@
 
 module Subsystems
   # A wrapper over subsystem interfaces, providing common tooling around
-  # interface calls (curently, only logging).
+  # interface calls (currently, only logging).
   #
   # Usage:
   #

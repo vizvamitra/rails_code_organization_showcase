@@ -25,7 +25,7 @@ module AcmeIntegration
           client_id: page.client_id,
           platform: :acme,
           public_id: page.public_id,
-          upstream_id: page.facebook_id,
+          upstream_id: page.acme_id,
           title: page.name,
           url: page.url,
           avatar_url: page.avatar_url

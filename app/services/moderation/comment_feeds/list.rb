@@ -31,7 +31,10 @@ module Moderation
       end
 
       def filter_by_title(scope, title)
-        title.nil? ? scope : scope.where("LOWER(title) LIKE ?", "%#{title.downcase}%")
+        return scope if title.nil?
+
+        title = CommentFeed.sanitize_sql_like(title)
+        scope.where("LOWER(title) LIKE ?", "%#{title.downcase}%")
       end
 
       def filter_by_connection_status(scope, connected)

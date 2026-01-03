@@ -28,7 +28,8 @@ module Acme
 
       case status
       when 200..299 then Response.new(status:, body:, headers:)
-      when 400..499 then raise ClientError.new(error_message(status, body))
+      when 401 then raise AuthenticationError.new(error_message(status, body))
+      when 400, 402..499 then raise ClientError.new(error_message(status, body))
       when 500..599 then raise ServerError.new(error_message(status, body))
       end
     end

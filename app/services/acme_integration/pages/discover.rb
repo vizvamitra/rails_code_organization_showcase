@@ -48,7 +48,7 @@ module AcmeIntegration
       end
 
       def undiscoverable_pages(identity, discoverable)
-        identity.pages.where.not(facebook_id: discoverable.map(&:id))
+        identity.pages.where.not(acme_id: discoverable.map(&:id))
       end
 
       def actualize_page(identity, attributes)

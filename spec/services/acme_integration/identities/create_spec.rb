@@ -14,7 +14,7 @@ RSpec.describe AcmeIntegration::Identities::Create do
   let!(:client) { create(:client) }
   let(:attributes) { build(:acme_integration_identity_attributes) }
   let(:identity) do
-    build(:acme_integration_identity, facebook_id: attributes.id)
+    build(:acme_integration_identity, acme_id: attributes.id)
   end
 
   let(:client_id) { client.id }

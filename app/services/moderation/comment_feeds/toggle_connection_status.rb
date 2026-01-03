@@ -11,7 +11,7 @@ module Moderation
         CommentFeed.find_by!(public_id:).update!(connected:)
 
         # Normally, there would probably be some other logics, like notifying
-        # the user when his comment feed looses connection
+        # the user when his comment feed loses connection
       end
     end
   end

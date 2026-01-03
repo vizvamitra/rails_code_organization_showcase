@@ -39,7 +39,7 @@ module AcmeIntegration
 
       def attributes_when_token_invalid(identity)
         Attributes.new(
-          id: identity.facebook_id,
+          id: identity.acme_id,
           name: identity.name,
           avatar_url: identity.avatar_url,
           access_token: nil,

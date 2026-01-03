@@ -24,7 +24,7 @@ RSpec.describe AcmeIntegration::Identities::Store do
 
       expect(store).to be_a(AcmeIntegration::Identity)
       expect(store).to have_attributes(
-        facebook_id: attributes.id,
+        acme_id: attributes.id,
         client:,
         **attributes.to_h.except(:id)
       )
@@ -37,7 +37,7 @@ RSpec.describe AcmeIntegration::Identities::Store do
         :acme_integration_identity,
         :revoked_access,
         client:,
-        facebook_id: attributes.id,
+        acme_id: attributes.id,
         name: "Jane Doe",
         avatar_url: "https://example.com/whatever.png"
       )
@@ -50,7 +50,7 @@ RSpec.describe AcmeIntegration::Identities::Store do
 
       expect(store).to eq(identity)
       expect(identity.reload).to have_attributes(
-        facebook_id: attributes.id,
+        acme_id: attributes.id,
         client:,
         **attributes.to_h.except(:id)
       )

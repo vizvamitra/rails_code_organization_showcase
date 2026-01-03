@@ -32,7 +32,7 @@ RSpec.describe AcmeIntegration::Pages::Discover do
   end
   let(:pages_attributes) do
     [
-      build(:acme_integration_page_attributes, id: pages[0].facebook_id), # existing
+      build(:acme_integration_page_attributes, id: pages[0].acme_id), # existing
       build(:acme_integration_page_attributes) # new
     ]
   end
@@ -71,7 +71,7 @@ RSpec.describe AcmeIntegration::Pages::Discover do
     )
   end
 
-  context "when identity looses ability to discover pages after sync" do
+  context "when identity loses ability to discover pages after sync" do
     let(:can_discover_pages) { false }
 
     it "cleans up providers for all pages provided by given identity" do

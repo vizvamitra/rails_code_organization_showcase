@@ -12,11 +12,11 @@ module AcmeIntegration
       # @param identity [AcmeIntegration::Identity]
       # @param attributes [AcmeIntegration::Pages::Attributes]
       #
-      # @return [AcmeIntegration::Page]
+      # @return [AcmeIntegration::Page, nil]
       #
       def call(identity:, attributes:)
         page = find_or_build(identity.client_id, attributes.id)
-        return unless prefered_provider?(page, identity, attributes)
+        return unless preferred_provider?(page, identity, attributes)
 
         update_public_details(page, attributes)
         update_access_details(page, identity, attributes)
@@ -31,13 +31,13 @@ module AcmeIntegration
       attr_reader :_is_preferred_access_provider, :_update_public_details,
                   :_update_access_details
 
-      def find_or_build(client_id, facebook_id)
+      def find_or_build(client_id, acme_id)
         Page
           .create_with(public_id: SecureRandom.uuid)
-          .find_or_initialize_by(client_id:, facebook_id:)
+          .find_or_initialize_by(client_id:, acme_id:)
       end
 
-      def prefered_provider?(page, identity, attributes)
+      def preferred_provider?(page, identity, attributes)
         _is_preferred_access_provider.call(
           page:,
           candidate: identity,
